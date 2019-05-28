@@ -1,0 +1,163 @@
+
+<style>
+  .item-title{
+    font-size:14px;
+    color:#aaa;
+  }
+  .item-after{
+    font-size:.7rem;    
+  }
+  .count{
+    color:orange;
+    padding: 0 .2rem;
+    font-size:.8rem;
+  }
+  .number-charge .item{
+    width: 100%;
+    border:1px solid #4cd964;
+    color:green;
+    border-radius:2px;
+    text-align:center;
+    height:3rem;
+    line-height:3rem;
+    margin-bottom: 1rem;
+  }
+  .balance{
+    color:green;
+    padding: 0 .2rem;
+    font-size:.8rem;
+  }
+  .list-block .item-inner{
+    min-height: 3rem;
+  }
+</style>
+<header class="bar bar-nav">
+  <a class="button button-link button-nav pull-left" data-url="recharge_users.html" data-transition='slide-out'>
+    <span class="icon icon-left"></span>
+    返回
+  </a>
+  <h1 class="title">为<span class="user-name"></span>充点</h1>
+</header>
+<div class="content">
+  <div class="buttons-tab">
+    <a href="#tab1" class="tab-link active button">充点</a>
+    <a href="#tab2" class="tab-link button">充点记录</a>
+  </div>
+  <div class="content-block" style="margin-bottom: 3rem;margin-top: .75rem;padding:0 .5rem;">
+        <div class="tabs">
+          <div id="tab1" class="tab active">
+            <div class="list-block">
+              <ul>
+                <!-- Text inputs -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">金额</div>
+                      <div class="item-input">
+                        <input type="number" id="input-charge">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="content-padded number-charge">
+              <div class="row">
+                <div class="col-33">
+                  <div class="item">100</div>
+                </div>
+                <div class="col-33">
+                  <div class="item">200</div>
+                </div>
+                <div class="col-33">
+                  <div class="item">500</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-33">
+                  <div class="item">1000</div>
+                </div>
+                <div class="col-33">
+                  <div class="item">3000</div>
+                </div>
+                <div class="col-33">
+                  <div class="item">5000</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-block">
+              <div class="row">
+                <div class="col-100"><a href="#" class="button button-big button-fill button-success">提交</a></div>
+              </div>
+            </div>
+          </div>
+          <div id="tab2" class="tab">
+            <div class="list-block charge-list" style="margin-top:.75rem;">
+              <ul>
+                <p style="text-align: center;">暂无充点记录</p>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+<script>
+  options.initPage = function(){
+
+    var uid = options.param.uid;
+    var uname = options.param.uname;
+    $(".user-name").text(uname);
+
+    $(".tab-item").click(function(){
+        $(this).siblings(".active").removeClass("active");
+        $(this).addClass("active");
+    })
+
+    $(".number-charge .item").click(function(){
+      var number = $(this).text();
+      $("#input-charge").val(number);
+    })
+
+    $(".button-success").click(function(){
+      var $charge = $("#input-charge");
+      var chargeVal = $charge.val();
+      if(chargeVal){
+        var data = {uid: uid, uname: uname, count: chargeVal};
+
+        $.confirm("请确认是否已线下收款 " + chargeVal + " 元, 并为"+uname+"充值？", function(){
+          GLOBAL.ajax('post', '/order/add', data, function(e){
+              var code = e.code;
+              if(code == 200){
+                GLOBAL.go('index.html');
+                $.alert(e.msg);
+              }
+          })
+        })
+      }else{
+        $.alert("请输入点数！", function(){
+          $charge.focus();
+        });
+      }
+    })
+
+    GLOBAL.ajax('post', '/order/history', {uid: options.param.uid, optname: '充点'}, function(e){
+      var code = e.code;
+      if(code == 200){
+        var data = e.data;
+        var html = '';
+        for(var i = 0; i < data.length; i++){
+          var count = data[i].count;
+          var balance = data[i].balance;
+          var time = data[i].datetime;
+
+          // balance = balance > 10000 ? (balance / 10000) + ' 万' : balance;
+          html += '<li class="item-content"><div class="item-inner"><div class="item-title">充<span class="count">'+count+'</span>, 余<span class="balance">'+balance+'</span>点</div><div class="item-after">'+time.split(' ').join('<br>')+'</div></div></li>';
+        }
+        $(".charge-list ul").empty().append(html);
+      }
+    })
+  }
+</script>

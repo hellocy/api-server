@@ -1,0 +1,56 @@
+  <style>
+    .card .icon{
+      vertical-align: middle;
+      margin-right: .5rem;
+      font-size: 1rem;
+      color:green;
+    }
+  </style>
+  <header class="bar bar-nav">
+    <h1 class="title">设置</h1>
+  </header>
+  
+  <div class="content" style="margin-bottom: 3rem;">
+    <div class="card" data-authority="10">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="session_list.html"><span class="icon icon-app"></span>场次设置</div>
+        </div>
+    </div>
+    <div class="card" data-authority="16">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="place_list.html"><span class="icon icon-browser"></span>地点设置</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-content" data-authority="14">
+          <div class="card-content-inner admin-option" data-url="subject_place_list.html"><span class="icon icon-star"></span>题目设置</div>
+        </div>
+    </div>
+    <div class="card" data-authority="5">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="player_set_list.html"><span class="icon icon-friends"></span>用户设置</div>
+        </div>
+    </div>
+    <div class="card" data-authority="8">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="animal.html"><span class="icon icon-settings"></span>动物设置</div>
+        </div>
+    </div>
+    <div class="card" data-authority="12">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="notice.html"><span class="icon icon-message"></span>公告设置</div>
+        </div>
+    </div>
+    <div class="card" data-authority="13">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="manager_list.html"><span class="icon icon-me"></span>管理员权限设置</div>
+        </div>
+    </div>
+  </div>
+  <script>
+    options.initPage = function(){
+      
+      $(".tab-item.active").removeClass("active");
+      $(".tab-item").eq(1).addClass("active");
+    }
+  </script>

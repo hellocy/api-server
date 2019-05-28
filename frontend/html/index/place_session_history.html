@@ -1,0 +1,36 @@
+  <header class="bar bar-nav">
+    <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+    <h1 class="title"></h1>
+  </header>
+  <div class="content">
+    <div class="list-block open-record" style="overflow-y: auto;margin-top: 1rem;margin-bottom: 3rem;">
+      <ul>
+        <p style="text-align: center;font-size:.75rem;">暂无开奖记录</p>
+      </ul>
+    </div>
+  </div>
+  <script>
+    options.initPage = function(){
+      var openList = '';
+      var placeId = options.param.placeId;
+      GLOBAL.ajax('post', '/session/getPlaceSessionHistory', {placeId: placeId}, function(e){
+        var code = e.code;
+        if(code == 200){
+          var data = e.data;
+          var placeName = data[0].placeName;
+          $(".title").text(placeName + '开奖记录');
+          for(var i = 0; i < data.length; i++){            
+            var placeName = data[i].placeName;
+            var openTime = data[i].openTime || "";
+            var openAnimalName = data[i].openAnimalName || "<span style='font-size:.7rem;color:red;'>未设</span>";
+            var sessionName = data[i].sessionName.split('场')[0].split("").pop();
+            openList += '<li class="item-content" style="font-size:14px"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title"><span style="font-size:14px">'+openTime.split('-').join("/").split(" ")[0]+'</span>（'+sessionName+'）</div><div class="item-after" >'+openAnimalName+'</div></div></li>'
+          }
+          $(".open-record ul").empty().append(openList);
+        }
+      })
+    }
+  </script>

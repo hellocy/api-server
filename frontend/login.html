@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>风云</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="/css/sm.min.css">
+    <link rel="stylesheet" href="/css/sm-extend.min.css">
+
+  </head>
+  <body>
+    <div class="page-group">
+        <div class="page">
+          <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-right" id="reg">
+              注册
+              <span class="icon icon-right"></span>
+            </a>
+            <h1 class="title">登录风云</h1>
+          </header>
+          <div class="content">
+            <div class="list-block">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-email"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</div>
+                      <div class="item-input">
+                        <input type="email" id="email">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-password"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码</div>
+                      <div class="item-input">
+                        <input type="password" class="" id="pwd">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">自动登录</div>
+                      <div class="item-input">
+                        <label class="label-switch">
+                          <input type="checkbox" id="auto-login">
+                          <div class="checkbox"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="content-block">
+              <div class="row">
+                <div class="col-100"><a href="#" class="button button-big button-fill button-success">提交</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script type='text/javascript' src='js/lib/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='js/lib/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='js/lib/sm-extend.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='js/common.js' charset='utf-8'></script>
+    <script type='text/javascript' src='js/zepto.cookie.min.js' charset='utf-8'></script>
+    <script>
+
+        $("#reg").click(function(){
+          location.href = "reg.html";
+        })
+
+        var localEmail = GLOBAL.get('email');
+        var localPwd = GLOBAL.get('pwd');
+        
+        if(localEmail && localEmail != 'null' && localPwd && localPwd != 'null'){
+            $("#email").val(localEmail);
+            $("#pwd").val(localPwd);
+            login(localEmail, localPwd);
+        }
+
+        $(".button-success").click(function(){
+          var email = $("#email").val();
+          var pwd = $("#pwd").val();
+          var autoLogin = $("#auto-login").val();
+          if(!email || !pwd){
+            $.alert("请输入邮箱和密码");
+          }else{
+
+            if(autoLogin){
+              GLOBAL.set('email', email);
+              GLOBAL.set('pwd', pwd);
+            }else{
+              GLOBAL.set('email', null);
+              GLOBAL.set('pwd', null);
+            }
+
+            login(email, pwd);
+          }
+        })
+
+        function login(email, pwd){
+            GLOBAL.ajax('post', '/user/login', {email: email, pwd: pwd}, function(e){
+              var code = e.code;
+              if(code == 200){
+                var data = e.data;
+                var role = e.data.role;
+
+                var url = 'http://'+location.host + '/html/';
+                GLOBAL.set('uid',  data.user_id);
+                GLOBAL.set('uname',  data.user_name);
+                GLOBAL.set('role',  data.role);
+                
+                if(role == 0){
+                  url += 'index/entry.html';
+                }else{
+                  url += 'admin/entry.html';                  
+                }
+                location.href = url;
+              }else{
+                $.alert(e.msg) 
+              }
+            })
+        }
+    </script>
+  </body>
+</html>

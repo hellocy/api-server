@@ -1,0 +1,376 @@
+
+    <style>
+      .list-block .item-inner{
+          padding-top: 1.4rem;
+          padding-bottom: 1.35rem;
+      }
+      .buttons-tab .button{
+        font-size: .7rem;
+      }
+
+      .forbidden-animals .item{
+        width: 100%;
+        border: 1px solid #4cd964;
+        color: green;
+        border-radius: 2px;
+        text-align: center;
+        height: 2rem;
+        line-height: 2rem;
+        margin-bottom: 0rem;
+      }
+      .row{
+        margin-bottom:1rem;
+      }
+
+      .item{
+        position: relative;
+      }
+      .item.active{
+        position: relative;
+        background: orange;
+        border-color:orange;
+        color:#fff;
+      }
+      .item.active:after{
+        content: "";
+        position: absolute;
+        width:100%;
+        height:1px;
+        background: #fff;
+        top:1rem;
+        left: 0;
+      }
+      .content-block{
+         margin-bottom:3rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url="session_list.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择场次</h1>
+    </header>
+    <div class="content">
+      <div class="buttons-tab">
+        <a href="#tab1" class="tab-link active button" data-authority="3">时间/倍率</a>
+        <a href="#tab3" class="tab-link button" data-authority="11">最高点数</a>
+        <a href="#tab4" class="tab-link button" data-authority="9">禁买动物</a>
+        <a href="#tab2" class="tab-link button" data-authority="2">开奖动物</a>
+      </div>
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="tabs">
+          <div id="tab1" class="tab active" data-authority="3">
+            <div class="list-block">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">开奖时间</div>
+                      <div class="item-input">
+                        <input type="text" placeholder="" id="datetime-picker" readonly="">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label close-picker">倍率</div>
+                      <div class="item-input">
+                        <input type="number" id='rate' placeholder="输入倍率数" />
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+              <div class="row">
+                <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="session_list.html">取消</a></div>
+                <div class="col-50"><a href="#" class="button button-big button-fill button-success button-session-time-rate">提交</a></div>
+              </div>
+            </div>
+          </div>
+          <div id="tab2" class="tab" data-authority="2">
+            <div class="list-block">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label close-picker">开奖动物</div>
+                      <div class="item-input">
+                        <input type="text" id='animal-picker' readonly="" placeholder="点击选择动物" />
+                        <input type="hidden" id='animal-id'/>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+                <div class="row">
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="session_list.html">取消</a></div>
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-success button-animal">提交</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tab3" class="tab" data-authority="11">
+            <div class="list-block">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">最高点数</div>
+                      <div class="item-input">
+                        <input type="text" id='ani-max-count' placeholder="点击输入" />
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+                <div class="row">
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="session_list.html">取消</a></div>
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-success button-ani-max-count">提交</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tab4" class="tab" data-authority="9">
+            <div class="list-block">
+              <div class="forbidden-animals"></div>
+              <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+                <div class="row">
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="session_list.html">取消</a></div>
+                  <div class="col-50"><a href="#" class="button button-big button-fill button-success button-forbidden-ani">提交</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+        options.initPage = function(){
+          var sessionName = options.param.sessionName;
+          var sessionId = options.param.sessionId;
+          var placeId = options.param.placeId;
+
+          var openAnimalName =  options.param.openAnimalName;
+          var openAnimalId =  options.param.openAnimalId;
+          var openTime =  options.param.openTime;
+          var rate =  options.param.rate;
+          var animaxcount =  options.param.animaxcount;
+          var forbidani =  options.param.forbidani;
+          var timeArr = [];
+          $(".title").text(sessionName);
+
+          $("#datetime-picker").val(openTime);
+          $("#animal-picker").val(openAnimalName == "null" ? "" : openAnimalName);
+          $("#rate").val(rate);
+          $("#ani-max-count").val(animaxcount ? animaxcount : 0);
+          var forbidAniArr = forbidani.split(",");
+
+          var selectorArr = [];
+          forbidAniArr.forEach(function(ele, idx){
+            selectorArr.push(".item[data-id='"+ele+"']");
+          })
+          var selector = selectorArr.join(",");
+
+          $("#datetime-picker").click(function(){
+            if(openTime != 'null'){
+              var ymd = openTime.split('-');
+              var day = ymd[2].split(' ')[0];
+              var hm = ymd[2].split(' ')[1].split(':');
+              timeArr = [ymd[0], ymd[1], day, hm[0], hm[1]];
+            }
+          }).focus(function(){
+            $(this).datetimePicker({
+              value: timeArr.length ? timeArr : getTime()
+            });
+          })
+
+          //先查询到所有的动物
+          GLOBAL.ajax("get", '/animal/list', null, function(e){
+            var code = e.code;
+            var data = e.data;
+            var html = '';
+            var allAnimals = {};
+            for(var i = 0; i < data.length; i++){
+              var id = data[i].id;
+              var key = data[i].aniName;
+              var name = data[i].aniCnName;
+              allAnimals[id] = name;
+            }
+
+            //然后根据当前地点的动物ID，在所有动物中匹配到动物信息
+            GLOBAL.ajax("post", '/place/detail', {placeId: options.param.placeId}, function(e){
+              var code = e.code;
+              var data = e.data;
+              if(code == 200){
+                var placeName = data.name;
+                var animals = data.animal;
+                var sequence = data.sequence;
+                var aniArr = animals.split(",");
+                var aniHtml = "";
+                var animalHtml = '<div class="row">';
+                $(".place-name").text(placeName);
+                $(".sequence").text(sequence);
+                var aniNameArr = [];
+                for(var i = 0; i < aniArr.length; i++){
+                  var aniId = aniArr[i];
+                  var aniName = allAnimals[aniId];
+                  aniNameArr.push(aniName);
+
+                  //设置禁止买入动物
+                  animalHtml += '<div class="col-20"><div class="item" data-id="'+aniId+'">'+aniName+'</span></div></div>';
+                  if(i != 0 && (i+1) % 5 == 0){
+                    animalHtml += '</div><div class="row">';
+                  }
+                }
+                animalHtml += '</div>';
+                $(".forbidden-animals").empty().append(animalHtml);
+
+                $(selector).addClass("active");
+
+                var selectedAnimalId = openAnimalId == 'null' ? aniArr[0] : openAnimalId;
+
+                $("#animal-picker").picker({
+                  toolbarTemplate: '<header class="bar bar-nav">\
+                  <button class="button button-link pull-right close-picker">确定</button>\
+                  <h1 class="title">选择本场开奖动物</h1>\
+                  </header>',
+                  cols: [
+                    {
+                      textAlign: 'center',
+                      values: aniArr,
+                      displayValues: aniNameArr
+                    }
+                  ],
+                  value: selectedAnimalId,
+                  formatValue: function (picker, value, displayValue){
+                    console.log(value + " - " + displayValue);
+                    return displayValue;
+                  },
+                  onClose: function(e,value){
+                    var selectedValue = e.value[0];
+                    $("#animal-id").val(selectedValue);
+                  }
+                });
+              }
+            });
+          }) 
+
+          $(".button-session-time-rate").click(function(){
+            var openTime = $("#datetime-picker").val();
+            var openAniId = $("#animal-id").val();
+            var rate = $("#rate").val();
+            if(!openTime){
+              $.alert("请设置开奖时间");
+              return;
+            }
+            if(rate == ''){
+              $.alert("请设置倍率");
+              return;
+            }
+            GLOBAL.ajax("put", '/session/setSettion1', {
+              openTime: openTime,
+              rate: rate,
+              sessionId: sessionId,
+              sessionName: sessionName,
+            }, function(e){
+              var msg = e.msg;
+              $.alert(msg);
+            })
+            
+          })
+
+          $(".button-animal").click(function(){
+            var openTime = $("#datetime-picker").val();
+            var openAniId = $("#animal-id").val();
+            var openAniName = $("#animal-picker").val();
+            if(!openAniId){
+              $.alert("请设置开奖动物");
+              return;
+            }
+            if(openTime == ""){
+              $.alert("请先设置开奖时间");
+              return;
+            }
+            $.confirm("确定要开奖<br>" + sessionName + "吗？", function(){
+              GLOBAL.ajax("put", '/session/setSettion2', {
+                openAniId: openAniId,
+                openAniName: openAniName,
+                sessionId: sessionId
+              }, function(e){
+
+                GLOBAL.ajax("post", '/session/openSession', {sessionId: sessionId, placeId: placeId}, function(e){
+                  var code = e.code,
+                      msg = e.msg;
+                  if(code == 200){
+                    $.alert(msg.join("，"));
+                    GLOBAL.go("index.html");
+                  }else{
+                    $.alert(msg);
+                  }
+                });
+              })
+            })
+          })
+
+          $(".button-ani-max-count").click(function(){
+            var animaxcount = $("#ani-max-count").val();
+            if(!animaxcount){
+              $.alert("请输入！");
+              return;
+            }
+            GLOBAL.ajax("put", '/session/setSettion3', {
+              animaxcount: animaxcount,
+              sessionId: sessionId
+            }, function(e){
+              var msg = e.msg;
+              $.alert(msg);
+            })
+          })
+
+          $(".button-forbidden-ani").click(function(){
+            var forbidAniArr = [];
+            $('.item.active').each(function(){
+              forbidAniArr.push($(this).data("id"));
+            })
+            if(forbidAniArr.length == 0){
+              $.alert("未设置禁止买动物");
+              return;
+            }
+            var animals = forbidAniArr.join(",");
+            GLOBAL.ajax("put", '/session/setSettion4', {
+              forbidAni: animals,
+              sessionId: sessionId
+            }, function(e){
+              var msg = e.msg;
+              $.alert(msg);
+            })
+          })
+
+          $(".forbidden-animals").on("click", ".item", function(){
+            $(this).toggleClass("active");
+          })
+
+          function getTime(){
+              var d = new Date();
+              var year = d.getFullYear();
+              var month = d.getMonth()+1 < 10 ? '0' + (d.getMonth()+1) : d.getMonth()+1;
+              var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+              var houer = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+              var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+              var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+              
+              return [year, month, day, houer, minutes, seconds];
+          }
+
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+        }
+    </script>

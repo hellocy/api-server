@@ -1,0 +1,262 @@
+<style>
+  .list-block{
+    margin: 0.75rem 0;
+  }
+  .user-head{
+    padding: 0 .5rem;
+    height: 10rem;
+    overflow-y: auto;
+    margin-bottom:1rem;
+  }
+  .user-head img{
+    width: 3rem;
+    height:3rem;
+    border-radius:50%;
+    transition: all .05s ease-in-out;
+  }
+  .user-head img.active{
+    border: 4px solid green;
+  }
+  
+  .manager-auth-list{
+    padding:.3rem;
+  }
+  .manager-auth-list .item{
+    text-align:center;
+    width:100%;
+    height:2rem;
+    line-height: 2rem;
+    margin:.2rem 0;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border:1px solid #4cd964;
+    font-size:.5rem;
+  }
+  .manager-auth-list .item.active{
+    background: #4cd964;
+  }
+</style>
+<header class="bar bar-nav">
+  <a class="button button-link button-nav pull-left" data-url="manager_list.html">
+    <span class="icon icon-left"></span>
+    返回
+  </a>
+  <h1 class="title">设置管理员</h1>
+</header>
+<div class="content">
+  <div class="list-block">
+    <ul>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-email"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">中文名称: </div>
+            <div class="item-input">
+              <input type="text" id="cnName">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-email"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">邮<span style="padding:0 .9rem;"></span>箱: </div>
+            <div class="item-input">
+              <input type="email" id="email">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-password"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">密<span style="padding:0 .9rem;"></span>码: </div>
+            <div class="item-input">
+              <input type="password" class="" id="pwd">
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="user-head">
+    <div class="row">
+      <div class="col-20 head-box">
+        <img src="../../images/0.jpg" data-img-name="0.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/1.jpg" data-img-name="1.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/2.jpg" data-img-name="2.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/3.jpg" data-img-name="3.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/4.jpg" data-img-name="4.jpg" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-20 head-box">
+        <img src="../../images/5.jpg" data-img-name="5.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/6.jpg" data-img-name="6.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/7.jpg" data-img-name="7.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/8.jpg" data-img-name="8.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/9.jpg" data-img-name="9.jpg" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-20 head-box">
+        <img src="../../images/10.jpg" data-img-name="10.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/11.jpg" data-img-name="11.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/12.jpg" data-img-name="12.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/13.jpg" data-img-name="13.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/14.jpg" data-img-name="14.jpg" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-20 head-box">
+        <img src="../../images/15.jpg" data-img-name="15.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/16.jpg" data-img-name="16.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/17.jpg" data-img-name="17.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/18.jpg" data-img-name="18.jpg" alt="">
+      </div>
+      <div class="col-20 head-box">
+        <img src="../../images/19.jpg" data-img-name="19.jpg" alt="">
+      </div>
+    </div>
+  </div>
+  <strong>设置权限：</strong>
+  <div class="manager-auth-list">
+  </div>
+  <div class="content-block" style="margin-bottom:3.5rem;">
+    <div class="row">
+      <!-- <div class="col-50"><a href="#" class="button button-big button-fill button-danger">取消</a></div> -->
+      <div class="col-100"><a href="#" class="button button-big button-fill button-success btn-add-user">提交</a></div>
+    </div>
+  </div>
+</div>
+<script>
+  options.initPage = function(){
+
+    GLOBAL.ajax('get', '/authority/fetchAll', null, function(e){
+        var code = e.code;
+        var data = e.data;
+        if(code == 200){
+          var authHtml = '<div class="row">';
+          for(var i = 0; i < data.length; i++){
+            var id = data[i].id,
+                authName = data[i].authName;
+            authHtml += '<div class="col-33"><div class="item" data-id="'+id+'">'+authName+'</div></div>';
+            if(i > 0 && (i+1) % 3 == 0){
+              authHtml += '</div><div class="row">'
+            }
+          }
+          authHtml += '</div>';
+          $(".manager-auth-list").empty().append(authHtml);
+
+          options.param.uid && GLOBAL.ajax('post', '/user/userDtl', {uid: options.param.uid}, function(e){
+              var code = e.code;
+              var data = e.data;
+              if(code == 200){
+                var cnname = data.user_name;
+                var email = data.mail;
+                var pwd = data.pwd;
+                var headImg = data.user_head;
+                var authority = data.authority.split(",");
+
+                $("#cnName").val(cnname);
+                $("#email").val(email);
+                $("#pwd").val(pwd);
+                $("#cnName").val(cnname);
+                $("img[data-img-name='"+headImg+"']").addClass("active");
+
+                authority.forEach(function(ele, idx){
+                  console.log($(".item[data-id='"+ele+"']"))
+                  $(".item[data-id='"+ele+"']").addClass("active");
+                })
+              }
+          })
+        }
+    })
+
+    $(".user-head img").click(function(){
+      $(".user-head img.active").removeClass("active");
+      $(this).addClass("active");
+    });
+
+    $(".manager-auth-list").on("click", ".item", function(){
+      $(this).toggleClass("active");
+    })
+
+    $(".btn-add-user").click(function(){
+      var cnName = $("#cnName").val();
+      var email = $("#email").val();
+      var pwd = $("#pwd").val();
+      var headImg = $(".user-head img.active").attr("data-img-name") || '0.jpg';
+      var authArr = [];
+      $(".manager-auth-list .item.active").each(function(){
+        var authId = $(this).data("id");
+        authArr.push(authId);
+      })
+      if(authArr.length == 0){
+        $.alert("请设置权限");
+        return;
+      }
+      if(cnName && email && pwd){
+        var data = {
+              cnName: cnName, 
+              email: email, 
+              pwd: pwd,
+              headImg: headImg,
+              authority: authArr.join(",")
+            };
+
+        var optApi = '/user/addManager';
+        if(options.param.uid){
+          data.uid = options.param.uid;
+          optApi = '/user/updateManager';
+        }
+        GLOBAL.ajax('post', optApi, data , function(e){
+          var code = e.code;
+          var msg = e.msg;
+          if(code == 200){
+            $.alert(msg);
+            GLOBAL.go("player_list.html");
+          }
+        })
+      }else{
+        $.alert("输入不完整！");
+      }
+    })
+
+    $(".tab-item.active").removeClass("active");
+    $(".tab-item").eq(1).addClass("active");
+  }
+</script>

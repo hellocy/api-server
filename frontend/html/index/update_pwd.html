@@ -1,0 +1,84 @@
+<style>
+  .list-block{
+    margin: 0.75rem 0;
+  }
+  .user-head{
+    padding: 0 .5rem;
+    height: 10rem;
+    overflow-y: auto;
+  }
+  .user-head img{
+    width: 3rem;
+    height:3rem;
+    border-radius:50%;
+    transition: all .05s ease-in-out;
+  }
+  .user-head img.active{
+    border: 4px solid green;
+  }
+</style>
+<header class="bar bar-nav">
+  <!-- <a class="button button-link button-nav pull-left" href="/demos/card" data-transition='slide-out'>
+    <span class="icon icon-left"></span>
+    返回
+  </a> -->
+  <h1 class="title">重置密码</h1>
+</header>
+<div class="content">
+  <div class="list-block">
+    <ul>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-password"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">新密码: </div>
+            <div class="item-input">
+              <input type="password" class="" id="pwd">
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="content-block">
+    <div class="row">
+      <!-- <div class="col-50"><a href="#" class="button button-big button-fill button-danger">取消</a></div> -->
+      <div class="col-100"><a href="#" class="button button-big button-fill button-success btn-update-pwd">提交</a></div>
+    </div>
+  </div>
+</div>
+<script>
+  options.initPage = function(){
+
+    $(".btn-update-pwd").click(function(){
+      var pwd = $("#pwd").val();
+      if(pwd){
+        var data = {
+              id: GLOBAL.get('uid'),
+              uname: GLOBAL.get('uname'),
+              newPwd: pwd
+            };
+        GLOBAL.ajax('post', '/user/updatePwd', data , function(e){
+          var code = e.code;
+          var msg = e.msg;
+          if(code == 200){
+            $.alert(msg);
+            GLOBAL.del('uid');
+            GLOBAL.del('role');
+            GLOBAL.del('uname');
+            GLOBAL.del('email');
+            GLOBAL.del('pwd');
+            setTimeout(function(){
+              location.href = '/login.html';
+            }, 1500);
+          }
+        })
+      }else{
+        $.alert("请输入新密码！");
+      }
+    })
+
+    $(".tab-item.active").removeClass("active");
+    $(".tab-item").eq(2).addClass("active");
+  }
+</script>

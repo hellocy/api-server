@@ -1,0 +1,79 @@
+
+    <style>
+      .list-block .item-content{
+        padding-left: 0
+      }
+       .list-block .item-link[data-status='1'] .item-inner{
+        color:#ccc;
+      }
+       .list-block .item-link[data-status='1'] .item-after{
+        color:#ccc;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">中奖排行榜</h1>
+    </header>
+    <div class="content">
+      <div class="buttons-tab">
+        <a href="#week" class="tab-link active button week">本周</a>
+        <a href="#month" class="tab-link button month">本月</a>
+      </div>
+      <div class="content-block" style="margin-top: .75rem;margin-bottom: 3rem;padding:0;">
+        <div class="tabs">
+          <div id="week" class="tab active">
+            <div class="list-block" style="margin-top: .75rem;font-size:.75rem;">
+              <ul></ul>
+            </div>
+          </div>
+          <div id="month" class="tab">
+            <div class="list-block" style="margin-top: .75rem;font-size:.75rem;">
+              <ul></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('post', '/user/winRanking', {time: 'week'}, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $("#week .list-block ul");
+              if(code == 200){
+                var html = '';
+                var activeHtml = '';
+                for(var i = 0; i < data.length; i++){
+                  var uname = data[i].uname;
+                  var total = data[i].total;
+                  html += '<li class="item-content"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+(i+1)+'. '+uname+'</div><div class="item-after">'+total+'</div></div></li>';
+                }
+                $container.empty().append(html);
+              }
+          })
+
+          $('a.month').click(function(){
+            if($("#month ul li").length == 0){
+              GLOBAL.ajax('post', '/user/winRanking', {time: 'month'}, function(e){
+                var code = e.code;
+                var data = e.data;
+                var $container = $("#month .list-block ul");
+                if(code == 200){
+                  var html = '';
+                  for(var i = 0; i < data.length; i++){
+                    var uname = data[i].uname;
+                    var total = data[i].total;
+                    html += '<li class="item-content"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+(i+1)+'. '+uname+'</div><div class="item-after">'+total+'</div></div></li>';
+                  }
+                  $container.empty().append(html);
+                }
+            })
+            }
+          })
+        }
+    </script>

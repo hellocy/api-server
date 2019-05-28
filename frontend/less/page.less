@@ -1,0 +1,124 @@
+@import url("base/common.less");
+
+.main-header .navbar {
+    background-color: @blue;
+    min-width:1136px;
+}
+.main-wrap{
+    /* overflow-y:auto; */
+}
+
+.need-permission{
+    display:none;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #d2d6de;
+    border-radius: 0;
+}
+
+.select2-selection__rendered{
+    line-height: 21px!important
+}
+.fa{
+    padding-right:5px;
+}
+
+.tab-item{
+    cursor: pointer;
+}
+
+#js_dataTable{
+    th, td{
+        border:1px solid #ddd;
+    }
+}
+
+.table-layout{
+    width:1200px;
+    border-collapse: collapse;
+}
+.table-layout td{
+    padding:10px;
+}
+td.field-name{
+    width:80px;
+    text-align: right;
+    padding-left:10px;
+    vertical-align:middle;
+    font-weight:bold;
+}
+td.field-value{
+    width:200px;
+    vertical-align: middle;
+    padding-left:10px;
+}
+
+input{
+    &.invalid{
+        border:1px solid red;
+    }
+}
+
+.upload-box{
+    width:100px;
+    height:40px;
+    border:1px solid #ccc;
+    padding:10px;
+    font-size:16px;
+    line-height:14px;
+    cursor: pointer;
+    &:hover{
+        border-color:#5FB878;
+        .upload-txt{
+            color:#5FB878;
+        }
+    }
+    .icon-plus{
+        font-size: 20px;
+        display: inline-block;
+        margin-left: 8px;
+        color: #5FB878;
+        border: 1px solid #5FB878;
+        border-radius: 50%;
+        padding: 0px;
+        width: 18px;
+        height: 18px;
+        line-height: 12px;
+    }
+    .upload-txt{
+        font-size:16px;
+        color:#666;
+        margin-left:8px;
+    }
+    input[type='file']{
+        display:none;
+    }
+}
+
+@keyframes animate-stripes {
+    0% {
+        background-position: 0 0
+    }
+
+    100% {
+        background-position: 60px 0
+    }
+}
+
+.processing{
+	transition: background-color .5s 0s ease;
+    background-size: 30px 30px;
+    background-image: -moz-linear-gradient(315deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    background-image: linear-gradient(135deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    -moz-animation: animate-stripes 1.8s linear infinite;
+    animation: animate-stripes 1.8s linear infinite;
+    pointer-events:none;
+}
+select[disabled] {
+  background: #eee;
+}
+.select2-selection__choice {
+  color: #666!important;
+}

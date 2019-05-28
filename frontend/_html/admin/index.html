@@ -1,0 +1,70 @@
+  <style>
+    [data-authority]{
+      display:none;
+    }
+    .card .icon{
+      vertical-align: middle;
+      margin-right: .5rem;
+      font-size: 1rem;
+      color:green;
+    }
+  </style>
+  <header class="bar bar-nav">
+    <h1 class="title">管理后台（<span id="admin-name"></span>）</h1>
+  </header>
+  
+  <div class="content">
+    <div class="card">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="place_session.html"><span class="icon icon-app"></span>查看场次</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="player_list.html"><span class="icon icon-friends"></span>查看用户</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="place_view.html"><span class="icon icon-browser"></span>查看地点</div>
+        </div>
+    </div>
+    <div class="card" data-authority="15">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="getMoney_list.html"><span class="icon icon-gift"></span>提点记录</div>
+        </div>
+    </div>
+    <div class="card" data-authority="1">
+        <div class="card-content">
+          <div class="card-content-inner admin-option" data-url="recharge_users.html"><span class="icon icon-cart"></span>用户充值</div>
+        </div>
+    </div>
+  </div>
+  <script>
+    options.initPage = function(){
+      $("#admin-name").text(GLOBAL.get('uname'));
+      GLOBAL.ajax("post", '/authority/getAuthorityByUser', {uid: GLOBAL.get('uid')}, function(e){
+        var code = e.code;
+        var data = e.data;
+        if(code == 200){
+          GLOBAL.authority = data[0].authority.split(",");
+
+          $("[data-authority]").each(function(){
+              var authId = $(this).attr('data-authority');
+              if($.inArray(authId, GLOBAL.authority) >= 0){
+                  $(this).show();
+              }
+          })
+        }
+      })
+
+      GLOBAL.ajax("post", '/message/getMessage', {uid: GLOBAL.get('uid')}, function(e){
+        var code = e.code;
+        var data = e.data;
+        if(code == 200){
+          var msgCount = data.length;
+          msgCount > 0 && $(".bar-tab .tab-item:last-child").append('<span class="badge">'+msgCount+'</span>');
+        }
+      })
+    }
+  </script>

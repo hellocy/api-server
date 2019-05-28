@@ -1,0 +1,109 @@
+    <style>
+      .animal-list .item{
+        width: 100%;
+        border: 1px solid #4cd964;
+        color: green;
+        border-radius: 2px;
+        text-align: center;
+        height: 2rem;
+        line-height: 2rem;
+        margin-bottom: 0rem;
+      }
+      .row{
+        margin-bottom:1rem;
+      }
+
+      .item{
+        position: relative;
+      }
+      .item.active{
+        background: #4cd964;
+        color:#000;
+      }
+      .content-block{
+         margin-bottom:3rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url='place_list.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">添加地点</h1>
+    </header>
+    <div class="content">
+      <div class="list-block">
+        <ul>
+            <li>
+              <div class="item-content">
+                <div class="item-media"><i class="icon icon-form-email"></i></div>
+                <div class="item-inner">
+                  <div class="item-title label">地名</div>
+                  <div class="item-input">
+                    <input type="text" id="place-name">
+                  </div>
+                </div>
+              </div>
+            </li>
+        </ul>
+      </div>
+      <div class="content-padded animal-list">
+        <div class="item-title label">
+          <p>选择动物:</p>
+        </div>
+        <div class="list-box">
+        </div>
+        
+      </div>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-100"><a href="#" class="button button-big button-fill button-success">提交</a></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      options.initPage = function(){
+        GLOBAL.ajax("get", '/animal/list', null, function(e){
+          var code = e.code;
+          var data = e.data;
+          var html = '<div class="row">';
+          for(var i = 0; i < data.length; i++){
+            var id = data[i].id
+            var name = data[i].aniCnName;
+            html += '<div class="col-20"><div class="item" data-id="'+id+'">'+name+'</span></div></div>';
+            if(i != 0 && (i+1) % 5 == 0){
+              html += '</div><div class="row">';
+            }
+          }
+          html += '</div>';
+          $(".list-box").empty().append(html);
+        });
+
+        $(".list-box").on("click", ".item", function(){
+          $(this).toggleClass("active");
+        })
+
+        $(".button-success").click(function(){
+          var placeName = $("#place-name").val();
+          var aniArr = [];
+          $('.item.active').each(function(){
+            aniArr.push($(this).data("id"));
+          })
+          var animals = aniArr.join(",");
+          if(!placeName){
+            $.alert("请输入地名");
+            return;
+          }
+          GLOBAL.ajax("post", '/place/add', {placeName: placeName, animals: animals}, function(e){
+            var code = e.code;
+            if(code == 200){
+              $.alert("添加成功！");
+              GLOBAL.go("place_list.html");
+            }
+          });
+        });
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(1).addClass("active");
+      }
+    </script>

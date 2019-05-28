@@ -1,0 +1,101 @@
+{
+    "trajectory": {
+        "trajectoryToItems": [
+            {
+                "id": "1131261606496337920",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-07 17:41:00",
+                "status": "Arrived at USPS Regional Facility",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606521503744",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-06 13:41:00",
+                "status": "Processed Through Facility",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606542475264",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-04 17:03:00",
+                "status": "Origin Post is Preparing Shipment",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606580224000",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-04 17:03:00",
+                "status": "Acceptance",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606605389824",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-04 01:33:00",
+                "status": "Processed Through Facility",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606630555648",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-02 10:16:00",
+                "status": "Acceptance",
+                "address": "",
+                "createTime": 1558425084
+            }
+        ],
+        "trajectoryFromItems": [
+            {
+                "id": "1131261606710247424",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-04 01:33:00",
+                "status": "INTERNATIONAL POST OFFICE",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606731218944",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-02 10:03:00",
+                "status": "INTERNATIONAL POST OFFICE",
+                "address": "",
+                "createTime": 1558425084
+            },
+            {
+                "id": "1131261606752190464",
+                "trajectoryId": "1131261606420840448",
+                "date": "2019-03-02 10:03:22",
+                "status": "INTERNATIONAL POST OFFICE",
+                "address": "",
+                "createTime": 1558425084
+            }
+        ],
+        "trajectory": {
+            "id": "1131261606420840448",
+            "trackNum": "LN540120169KR",
+            "innerNum": "",
+            "result": 40,
+            "logisCode": "korea-post",
+            "country": "US",
+            "residenceTime": 44,
+            "haulageTime": 7,
+            "updateTime": "2019-04-10 15:32:02",
+            "onlineTrayDate": "2019-03-06 13:41:00",
+            "onlineTrayStatus": "USJFKA, Arrival at inward office of exchange",
+            "onlineTrayAddress": "",
+            "signTrayAddress": "",
+            "signTrayDate": "2019-03-09 14:39:00",
+            "signTrayStatus": "Delivery complete",
+            "latestTrayAddress": "",
+            "latestTrayDate": "2019-03-09 14:39:00",
+            "latestTrayStatus": "Delivery complete",
+            "createTime": 1558425084
+        }
+    }
+}

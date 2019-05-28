@@ -1,0 +1,67 @@
+
+    <style>
+      .list-block .item-inner{
+          padding-top: 1.4rem;
+          padding-bottom: 1.35rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url="session_list.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">设置公告</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <strong>公告内容</strong>
+        <textarea id="noeict-content" style="width:100%;padding:1rem;height:40vh;border-color:#ccc;"></textarea>
+      </div>
+      <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+        <div class="row">
+          <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="setting.html">取消</a></div>
+          <div class="col-50"><a href="#" class="button button-big button-fill button-success button-notice-set">提交</a></div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+        options.initPage = function(){
+          var hasNotice = false;
+          //查询上一条公告
+          GLOBAL.ajax("get", '/notice/getNotice', null, function(e){
+            var code = e.code;
+            var data = e.data;
+            var content = data[0].content;
+            if(content){
+              hasNotice = true;
+              $("#noeict-content").val(content);
+            }
+          })
+
+          $(".button-notice-set").click(function(){
+            var content = $("#noeict-content").val();
+            if(content == ""){
+              $.alert("请输入公告内容");
+            }
+            else{
+              var apiUrl = '/notice/addNotice';
+              var method = 'post';
+              if(hasNotice){            
+                apiUrl = '/notice/setNotice';
+                method = 'put';
+              }
+              GLOBAL.ajax(method, apiUrl, {content: content}, function(e){
+                var code = e.code;
+                if(code == 200){
+                  $.alert("保存成功！");
+                  GLOBAL.go("setting.html");
+                }
+              });
+            }
+          })
+
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+        }
+    </script>

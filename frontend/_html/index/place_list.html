@@ -1,0 +1,43 @@
+
+    <style>
+    </style>
+    <header class="bar bar-nav">
+      <!-- <a class="button button-link button-nav pull-left" href="/demos/card" data-transition='slide-out'>
+        <span class="icon icon-left"></span>
+        返回
+      </a> -->
+      <h1 class="title">地点列表</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+          <div class="list-block">
+            <ul></ul>
+          </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('get', '/place/list', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $(".list-block ul");
+              if(code == 200){
+                var html = '';
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id;
+                  var name = data[i].name;
+                  var time = data[i].animal;
+                  var sequence = data[i].sequence;
+                  html += '<li class="item-content item-link" data-id="'+id+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+name+'</div><div class="item-after">第'+sequence+'场</div></div></li>';
+                }
+                $container.empty().append(html);
+              }
+            })
+
+          $(".list-block ul").on("click", '.item-content', function(){
+            options.param.placeId = $(this).data('id');
+            GLOBAL.go('buy.html');
+          })
+        }
+    </script>

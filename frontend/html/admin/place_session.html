@@ -1,0 +1,123 @@
+
+    <style>
+      .list-block .item-content{
+        padding-left: 0
+      }
+       .list-block .item-link[data-status='1'] .item-inner{
+        color:#ccc;
+      }
+       .list-block .item-link[data-status='1'] .item-after{
+        color:#ccc;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择场次</h1>
+    </header>
+    <div class="content">
+      <div class="buttons-tab">
+        <a href="#today" class="tab-link active button today">未开场次</a>
+        <a href="#history" class="tab-link button histroy">已开场次</a>
+      </div>
+      <div class="content-block" style="margin-top: .75rem;margin-bottom: 3rem;padding:0;">
+        <div class="tabs">
+          <div id="today" class="tab active">
+            <div class="list-block" style="margin-top: .75rem;font-size:.75rem;">
+              <ul></ul>
+            </div>
+          </div>
+          <div id="history" class="tab">
+            <div class="list-block" style="margin-top: .75rem;font-size:.75rem;">
+              <ul></ul>
+            </div>
+            <div style="font-size:.7rem;text-align: center;color:#aaa;">仅展示最近50场</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('post', '/session/getTodySession', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $("#today .list-block ul");
+              if(code == 200){
+                var html = '';
+                var activeHtml = '';
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id;
+                  var placeId = data[i].placeId;
+                  var placeName = data[i].placeName;
+                  var sessionName = data[i].sessionName;
+                  var sequence = data[i].sequence;
+                  var status = data[i].status;
+                  var openAnimalName = data[i].openAnimalName || "";
+                  var openTime = data[i].openTime || "";
+                  var rate = data[i].rate || "";
+                  if(status == '0'){
+                    activeHtml += '<li class="item-content item-link" data-id="'+id+'" data-status="'+status+'" data-session-name="'+sessionName+'" data-place-id="'+placeId+'" ><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+'</div><div class="item-after">'+sequence+'</div></div></li>';
+                  }else{
+                    html += '<li class="item-content item-link" data-id="'+id+'" data-status="'+status+'" data-session-name="'+sessionName+'" data-place-id="'+placeId+'"  data-openAnimalName="'+openAnimalName+'" data-openTime="'+openTime+'" data-rate="'+rate+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+'</div><div class="item-after">'+sequence+'</div></div></li>';
+                  }
+                }
+                $container.empty().append(activeHtml).append(html);
+              }
+          })
+
+          $('a.histroy').click(function(){
+            if($("#history ul li").length == 0){
+              GLOBAL.ajax('get', '/session/getHistory', null, function(e){
+                var code = e.code;
+                var data = e.data;
+                var $container = $("#history .list-block ul");
+                if(code == 200){
+                  var html = '';
+                  for(var i = 0; i < data.length; i++){
+                    var id = data[i].id;
+                    var placeId = data[i].placeId;
+                    var placeName = data[i].placeName;
+                    var sessionName = data[i].sessionName;
+                    var sequence = data[i].sequence;
+                    var date = data[i].date;
+                    var openAnimalName = data[i].openAnimalName || "";
+                    var openTime = data[i].openTime || "";
+                    var rate = data[i].rate || "";
+                    html += '<li class="item-content item-link" data-id="'+id+'" data-session-name="'+sessionName+'" data-place-id="'+placeId+'" data-openAnimalName="'+openAnimalName+'" data-openTime="'+openTime+'" data-rate="'+rate+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+''+sequence+'场</div><div class="item-after">'+date+'</div></div></li>';
+                  }
+                  $container.empty().append(html);
+                }
+            })
+            }
+          })
+
+          $("#today .list-block ul").on("click", '.item-content', function(){
+            var status = $(this).attr("data-status");
+            options.param.sessionId = $(this).data('id');
+            options.param.sessionName = $(this).attr('data-session-name');
+            if(status == 0){
+              options.param.placeId = $(this).attr('data-place-id');
+              GLOBAL.go('bet_list.html');
+            }else{
+              options.param.openAnimal = $(this).attr('data-openAnimalName');
+              options.param.openTime = $(this).attr('data-openTime');
+              options.param.sessionName = $(this).attr('data-session-name');
+              options.param.rate = $(this).attr('data-rate');
+              GLOBAL.go('session_detail.html');
+            }
+          })
+
+          $("#history .list-block ul").on("click", '.item-content', function(){
+            options.param.sessionId = $(this).data('id');
+            options.param.openAnimal = $(this).attr('data-openAnimalName');
+            options.param.openTime = $(this).attr('data-openTime');
+            options.param.sessionName = $(this).attr('data-session-name');
+            options.param.rate = $(this).attr('data-rate');
+            GLOBAL.go('session_detail.html');
+          })
+        }
+    </script>

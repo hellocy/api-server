@@ -1,0 +1,51 @@
+
+    <style>
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="setting.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择地点</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+          <div class="list-block">
+            <ul></ul>
+          </div>
+      </div>
+      <div class="content-block" data-authority="6">
+        <div class="row">
+          <div class="col-100"><a href="#" class="button button-big button-fill button-success btn-add-place" data-url="add_place.html">添加</a></div>
+        </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('get', '/place/list', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $(".list-block ul");
+              if(code == 200){
+                var html = '';
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id;
+                  var name = data[i].name;
+                  var time = data[i].animal;
+                  html += '<li class="item-content item-link" data-id="'+id+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+name+'</div></div></li>';
+                }
+                $container.empty().append(html);
+              }
+            })
+
+          $(".list-block ul").on("click", '.item-content', function(){
+            options.param.placeId = $(this).data('id');
+            options.param.placeIName = $(this).find('.item-title').text();
+            GLOBAL.go('place_set_animal.html');
+          })
+
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+        }
+    </script>

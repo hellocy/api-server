@@ -1,0 +1,62 @@
+
+    <style>
+      .grid-player{
+        text-align: center;
+      }
+      .grid-player{
+        margin-bottom: 3rem;
+      }
+      .item{
+        padding: 10px 0;
+      }
+      .item-title{
+        margin:.1rem;
+        font-size:12px;
+        color:#555;
+      }
+      img{
+        border-radius: .2rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">所有用户（<span class="user-total"></span>）</h1>
+    </header>
+    <div class="content">
+      <div class="content-padded grid-player">
+      </div>
+    </div>
+    <script>
+      options.initPage = function(){
+        $(".grid-player").on('click', '.item', function(){
+          options.param.id = $(this).data('uid');
+          options.param.uname = $(this).find(".item-title").text();
+          GLOBAL.go("player_detail.html");
+        })
+
+        GLOBAL.ajax('get', GLOBAL.host + 'user/list', null, function(e){
+          var code = e.code;
+          var users = e.data;
+
+          if(code == 200){
+            var userLen = users.length;
+            var html = '<div class="row">';
+            $(".user-total").text(userLen - 1)
+            for(var i = 0; i < userLen; i++){
+              var head = users[i].headImg;
+              var id = users[i].id;
+              var user_name = users[i].user_name;
+              html += '<div class="col-25 item" data-uid="'+id+'"><img src="../../images/'+head+'" style="width: 3rem;"><p class="item-title">'+user_name+'</p></div>';
+              if(i != 0 && (i+1) % 4 == 0){
+                html += '</div><div class="row">';
+              }
+            }
+            html += '</div>';
+            $(".grid-player").empty().append(html);
+          }
+        })
+      }
+    </script>

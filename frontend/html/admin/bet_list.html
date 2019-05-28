@@ -1,0 +1,123 @@
+  <style>
+    .empty-tip{
+      text-align: center;
+      color:#888;
+    }
+
+    .content-block{
+      margin: 1rem 0 3.5rem 0;
+    }
+  </style>
+  <header class="bar bar-nav">
+    <a class="button button-link button-nav pull-left" href="javascript:" data-url='place_session.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+    <h1 class="title"></h1>
+  </header>
+  <div class="content">
+    <div class="buttons-tab">
+      <a href="#buyer" class="tab-link active button">按用户统计</a>
+      <a href="#animal" class="tab-link button">按动物统计</a>
+    </div>
+    <div class="content-block">
+      <div class="tabs">
+        <div id="buyer" class="tab active">
+            <div class="list-block" style="margin:0.75rem 0;font-size:.75rem;">
+              <ul><p class="empty-tip" style="font-size: .6rem;">本场暂无下注记录</p></ul>
+            </div>
+        </div>
+        <div id="animal" class="tab">
+            <div class="list-block" style="margin:0.75rem 0;font-size:.75rem;">
+              <ul><p class="empty-tip" style="font-size: .6rem;">本场暂无下注记录</p></ul>
+            </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <script>
+    options.initPage = function() {
+      var sessionName = options.param.sessionName;
+
+      GLOBAL.ajax('post', '/buy/getSessionBuyList', {sessionId: options.param.sessionId}, function(e){
+        var code = e.code;
+        var data = e.data;
+        var $container = $("#buyer .list-block ul");
+        if(code == 200){
+          var html = '';
+          for(var i = 0; i < data.length; i++){
+            var id = data[i].id;
+            var uId = data[i].uId;
+            var uName = data[i].uName;
+            var amount = data[i].amount;
+            var placeName = data[i].placeName;
+            var sessionId = data[i].sessionId;
+            sessionName = data[i].sessionName;
+            var sequence = data[i].sequence;
+            html += '<li class="item-content item-link" data-uname="'+uName+'" data-uid='+uId+' data-session-id="'+sessionId+'"><div class="item-inner"><div class="item-title">'+uName+'</div><div class="item-after">'+amount+'</div></div></li>';
+          }
+          if(html){
+            $container.empty().append(html);
+          }
+        }
+        $(".title").text(sessionName);
+      })
+
+      GLOBAL.ajax('post', '/buy/getSessionBuyAnimal', {sessionId: options.param.sessionId}, function(e){
+        var code = e.code;
+        var data = e.data;
+        var $container = $("#animal .list-block ul");
+        var animals = {};
+        var total = 0;
+        if(code == 200){
+          var html = '';
+          for(var i = 0; i < data.length; i++){
+            var usersData = JSON.parse(data[i].detail);
+            for(var j = 0; j < usersData.length; j++){
+              var detail = usersData[j];
+              var aniName = detail.aniName;
+              var aniCount = detail.count;
+              if(animals[aniName]){
+                animals[aniName] = animals[aniName] + aniCount;
+              }else{
+                animals[aniName] = aniCount;
+              }
+              total += aniCount
+            }
+          }
+
+          html += '<li class="item-content" style="margin-bottom:1rem;"><div class="item-inner"><div class="item-title">总计：</div><div class="item-after" style="font-size:1rem;">'+total+'</div></div></li>';
+
+          console.log(animals, 8888)
+          var _arr = [];
+          for(var n in animals){
+            var _obj = {};
+            _obj.name = n;
+            _obj.count = animals[n];
+            _arr.push(_obj);
+          }
+
+          console.log(_arr, 999)
+
+          var newArr = GLOBAL.quickSort(_arr);
+
+          for(var i = 0, len = newArr.length; i < len; i++){          
+            html += '<li class="item-content"><div class="item-inner"><div class="item-title">'+newArr[i].name+'</div><div class="item-after">'+newArr[i].count+'</div></div></li>';
+          }
+
+          if(html){
+            $container.empty().append(html);
+          }
+        }
+      })
+
+      $("#buyer .list-block ul").on("click", '.item-content', function(){
+        options.param.uId = $(this).data('uid');
+        options.param.uName = $(this).data('uname');
+        options.param.sessionId = $(this).attr('data-session-id');
+        options.param.sessionName = sessionName;
+        GLOBAL.go('bet_detail.html');
+      })
+    } 
+  </script>

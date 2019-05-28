@@ -1,0 +1,121 @@
+  <header class="bar bar-nav">
+    <h1 class="title">欢迎您，<span id="user"></span></h1>
+  </header>
+  <div class="content">
+    <div class="card">
+      <div class="card-header" style="text-align: center;">
+        <strong style="display: inline-block;width:100%;text-align: center;">公告说明</strong>
+      </div>
+      <div class="card-content">
+        <div class="card-content-inner" id="notice-content">暂无公告</div>
+      </div>
+    </div>
+  
+    <!-- <div class="list-block profile-bx">
+      <div class="content-block-title" style="text-align: center;">
+        <a data-url="win_ranking.html">中奖排行榜&gt;&gt;</a>
+      </div>
+    </div> -->
+
+    <div class="list-block profile-bx">
+      <div class="content-block-title">我的消息</div>
+      <div class="list-group msg-box">
+        <ul></ul>
+      </div>
+    </div>
+
+    <div class="content-block-title">开奖记录(最近10场)：</div>
+    <div class="list-block open-record" style="height:35vh;overflow-y: auto;margin-bottom: 3rem;">
+      <ul>
+        <p style="text-align: center;font-size:.75rem;">暂无开奖记录</p>
+      </ul>
+    </div>
+  </div>
+  <script>
+    options.initPage = function(){
+      var uid = GLOBAL.get('uid');
+      var uname = GLOBAL.get('uname');
+      if(uname){
+        $("#user").text(uname);
+        GLOBAL.ajax('post', '/user/userDtl', {uid: uid}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var head = data.user_head;
+            var name = data.user_name;
+            var joinTime = data.joinTime;
+            var balance = data.balance;
+            $(".header img").attr("src", 'http://' + location.host + '/images/' + head);
+            $("#user_name").text(name);
+            $("#joinTime").text(joinTime);
+            $("#balance").text(balance);
+          }else{
+            $.alert(e.msg) 
+          }
+        })
+      }else{
+        location.href = 'http://' + location.host + '/login.html';
+      }
+
+      GLOBAL.ajax('get', '/notice/getNotice', null, function(e){
+        var code = e.code;
+        if(code == 200){
+          var data = e.data;
+          var content = data[0].content;
+          $("#notice-content").html(content.replace(/\n/g,"<br/>").replace(/\s/g,"&nbsp;"));
+        }
+      })
+
+      var openList = "";
+      GLOBAL.ajax('get', '/session/getOpenSession', null, function(e){
+        var code = e.code;
+        if(code == 200){
+          var data = e.data;
+          for(var i = 0; i < data.length; i++){            
+            var placeName = data[i].placeName;
+            var openTime = data[i].openTime || "";
+            var placeId = data[i].placeId;
+            var openAnimalName = data[i].openAnimalName || "<span style='font-size:.7rem;color:red;'>未设</span>";
+            var sessionName = data[i].sessionName.split('场')[0].split("").pop();
+            openList += '<li class="item-content" style="font-size:14px" data-placeid="'+placeId+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+'：</div><div class="item-after" ><span style="font-size:14px">'+openTime.split('-').join("/").split(" ")[0]+'</span>（'+sessionName+'）'+openAnimalName+'</div></div></li>'
+          }
+          $(".open-record ul").empty().append(openList);
+        }
+      })
+
+      GLOBAL.ajax("post", '/message/getMessage', {uid: GLOBAL.get('uid')}, function(e){
+        var code = e.code;
+        var data = e.data;
+        if(code == 200){
+          var msgCount = data.length;
+          var msgHtml = '';
+          for(var i = 0; i < msgCount; i++){
+            var content = data[i].content,
+                id = data[i].id,
+                time = data[i].datetime;
+            msgHtml += '<li data-id="'+id+'"><div class="item-content"><div class="item-inner"><div class="item-title" style="font-size:.55rem;color:#000">'+content+'</div><span class="join-time" style="font-size:.55rem;color:#aaa;text-align:right;">'+time+'</span></div></div></li>';
+          }
+          $(".msg-box ul").empty().append(msgHtml);
+
+          msgCount > 0 && $(".bar-tab .tab-item:first-child").append('<span class="badge">'+msgCount+'</span>');
+        }
+      })
+
+      $(".msg-box ul").on("click", "li", function(){
+        var $this = $(this);
+        var msgId = $this.attr("data-id");
+        GLOBAL.ajax("put", '/message/updateMessage', {msgId: msgId}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            $this.remove();
+          }
+        })
+      })
+
+      $(".open-record ul").on("click", 'li', function(){
+        options.param.placeId = $(this).data("placeid");
+        GLOBAL.go("place_session_history.html");
+      })
+    }
+  </script>

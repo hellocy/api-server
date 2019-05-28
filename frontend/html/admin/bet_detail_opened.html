@@ -1,0 +1,50 @@
+  <style>
+    .list-block{
+      margin:0.75rem 0;
+      margin-bottom:3rem;
+    }
+  </style>
+  <header class="bar bar-nav">
+    <a class="button button-link button-nav pull-left" href="javascript:" data-transition='slide-out' data-url="session_detail.html">
+      <span class="icon icon-left"></span>
+      返回
+    </a>
+    <h1 class="title"></h1>
+  </header>
+  <div class="content">
+    <p><span class="user"></span>购买详情：</p>
+    <div class="list-block">
+      <ul></ul>
+    </div>
+  </div>
+
+  <script>
+    options.initPage = function() {
+
+      var sessionName = options.param.sessionName;
+      var sessionId = options.param.sessionId;
+      $(".title").text(sessionName);
+      $(".user").text(options.param.uName);
+      GLOBAL.ajax('post', '/buy/getBuyDtl', {
+        uId: options.param.uId,
+        sessionId: options.param.sessionId
+      }, function(e){
+        var code = e.code;
+        if(code == 200){
+          var detail = GLOBAL.quickSort(e.data.detail);
+          var l = detail.length;
+          var html = '';
+          for(var i = 0; i < l; i++){
+            var aniId = detail[i].id;
+            var count = detail[i].count;
+            var aniName = detail[i].aniName;
+            html += '<li class="item-content"><div class="item-inner"><div class="item-title">'+aniName+'</div><div class="item-after">'+count+'</div></div></li>';
+          }
+          $(".list-block ul").empty().append(html);
+        }
+      })
+
+      $(".tab-item.active").removeClass("active");
+      $(".tab-item").eq(0).addClass("active");
+    } 
+  </script>

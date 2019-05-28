@@ -1,0 +1,433 @@
+  <style>
+    #place-subject{
+      text-align:left;
+      font-size:.7rem;
+      padding:.5rem;
+      box-shadow:  0 0 1rem rgba(0,0,0,.1) inset
+    }
+    .timer{
+      padding:.3rem;
+      margin:.3rem;
+      font-size: .75rem;
+      text-align: center;
+      border:1px dashed #ccc;
+    }
+
+    .item{
+        width: 3.5rem;
+        height: 3.5rem;
+        border: 1px solid #4cd964;
+        margin: .3rem auto;
+        text-align: center;
+        border-radius: .2rem;
+        overflow:hidden;
+      }
+      .item .ani-name{
+        height:2rem;
+        line-height:2rem;
+        background: #4cd964;
+        border-bottom:1px solid #4cd964;
+        color: darkolivegreen;
+      }
+      .item .ani-count{
+        padding-top:.35rem;
+        font-size:12px;
+      }
+      .buy-total-box-wrapper{
+        height: 35px;
+      }
+      .buy-total-box{
+        width: 100%;
+        left: 0;
+        background: #FFF;
+        padding: .2rem .4rem;
+        border-top: 1px solid #4cd964;
+        border-bottom: 1px solid #4cd964;
+      }
+      .fixed-line{
+        width: 100%;
+        height: 1px;
+      }
+  </style>
+  <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url='session_list.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+    <h1 class="title"><span class="session-name"></span></h1>
+    <a class="button button-link button-nav pull-right button-success" href="javascript:">
+      保存
+      <span class="icon icon-check"></span>
+    </a>
+  </header>
+  <div class="content">
+    <p class="timer" style="">距离开场还有：00小时00分00秒</p>
+    <div style="padding:.3rem; text-align:center;">
+      <img src="" id="place-img" style="width:100%;display: none">
+      <div id="place-subject" style=""></div>
+    </div>
+    <div class="fixed-line"></div>
+    <div class="buy-total-box-wrapper">
+        <div class="buy-total-box"><span>总下注：</span><span id="buy-total">0</span></div>
+    </div>
+    <div class="list-block" style="margin: 0.2rem 0 3.5rem 0;"></div>
+    <!-- <div class="content-block" style="margin:0.75rem 0 3rem 0;">
+      <div class="row">
+        <div class="col-50"><a href="#" class="button button-big button-fill button-danger" data-url="index.html">取消</a></div>
+        <div class="col-50"><a href="#" class="button button-big button-fill button-success">提交</a></div>
+      </div>
+    </div> -->
+  </div>
+  <script>
+    var timer;
+    options.initPage = function() {
+      if(timer){
+        clearInterval(timer);
+      }
+      var sessionName = options.param.sessionName;
+      var sessionId = options.param.sessionId;
+
+      var isEdit = false;
+
+      var forbidAniArr = [];
+      var maxAniCount = 0;
+      
+      var isOpenSoon = false;
+      var isOpened = false;
+
+      var uBalance = 0;
+
+      $('.session-name').text(sessionName);
+
+      GLOBAL.ajax('post', '/user/getBalance', {uId: GLOBAL.get('uid')}, function(e){
+        var rCode =  e.code;
+        if(rCode == 200){
+          uBalance = e.data
+        }
+      })
+
+      GLOBAL.ajax('post', '/session/getSessionInfo', {sessionId: sessionId}, function(e){
+        var data = e.data;
+        var openTime = data.openTime;
+        forbidAniArr = (data.forbiddenAni || "").split(",");
+        maxAniCount = data.aniMaxCount;
+        if(openTime){
+          timer = setInterval(function(){
+            var now = Date.now();
+            var end = new Date(openTime.replace(/-/g, "/")).getTime();
+            
+            var disTime = end - now;
+            if(disTime <= 0){
+              isOpened = true;
+              $(".timer").html('<span style="padding:.5rem;color:#888">开场时间已到</span>');
+              clearInterval(timer);
+              return;
+            }
+
+            //计算出相差天数
+            var days = Math.floor(disTime/(24*3600*1000));
+            //计算出相差小时数
+            var leave1 = disTime % (24*3600*1000)
+            var hours = Math.floor(leave1/(3600*1000))
+            //计算相差分钟数
+            var leave2 = leave1 % (3600*1000)
+            var minutes = Math.floor(leave2/(60*1000))
+
+            if(hours == 0 && minutes <= 15){
+              isOpenSoon = true;
+            }
+            //计算相差秒数
+            var leave3=leave2%(60*1000)
+            var seconds=Math.round(leave3/1000)
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            timer && $(".timer").text("距离开场还有：" + hours + "小时" + minutes + "分" + seconds + "秒");
+          }, 1000);
+        }else{
+          clearInterval(timer);
+          timer = null;
+          $(".timer").html('<span style="padding:.5rem;color:#888">请等待开场</span>');
+        }
+      })
+
+
+      //先查询到所有的动物
+      GLOBAL.ajax("get", '/animal/list', null, function(e){
+        var code = e.code;
+        var data = e.data;
+        var html = '';
+        var allAnimals = {};
+        for(var i = 0; i < data.length; i++){
+          var id = data[i].id;
+          var key = data[i].aniName;
+          var name = data[i].aniCnName;
+          allAnimals[id] = name;
+        }
+
+        //然后根据当前地点的动物ID，在所有动物中匹配到动物信息
+        GLOBAL.ajax("post", '/place/detail', {placeId: options.param.placeId}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var placeName = data.name;
+            var animals = data.animal;
+            var image = data.subjectImg;
+            var subject = data.subject || '';
+            var sequence = data.sequence;
+            var aniArr = animals.split(",");
+            var aniHtml = '<div class="row">';
+            if(image){
+              $("#place-img").attr("src", image);
+              $("#place-img")[0].addEventListener('load', function(){
+                $(this).show();
+              })
+            }
+            $("#place-subject").html(subject.replace(/\n/g,"<br/>").replace(/\s/g,"&nbsp;"));
+
+            for(var i = 0; i < aniArr.length; i++){
+              var aniId = aniArr[i];
+              var aniName = allAnimals[aniId];
+
+              aniHtml += '<div class="col-25"><div class="item" data-id="'+aniId+'" data-name="'+aniName+'" data-count=""><div class="ani-name"><strong>'+aniName+'</strong></div><div class="ani-count">点击输入</div></div></div>';
+
+              if(i != 0 && (i+1) % 4 == 0){
+                aniHtml += '</div><div class="row">';
+              }
+            }
+            aniHtml += '</div>';
+            $(".list-block").empty().append(aniHtml);
+
+            GLOBAL.ajax('post', '/buy/getBuyDtl', {
+              uId: GLOBAL.get('uid'),
+              sessionId: options.param.sessionId
+            }, function(e){
+              var code = e.code;
+              var detail = [];
+              var l = 0;
+              if (code == 405 || GLOBAL.session(sessionId)) {
+                detail = GLOBAL.session(sessionId);
+                l = detail.length;
+              } else if (code == 200){
+                  detail = e.data.detail; 
+                  l = detail.length;
+              }
+
+              if(detail.length > 0){
+                isEdit = true;
+              }
+              
+              var _total = 0;
+              for(var i = 0; i < l; i++){
+                var aniId = detail[i].id;
+                var count = detail[i].count;
+                var aniName = detail[i].aniName;
+                _total += count;
+                $("[data-id='"+aniId+"']").attr({
+                  "data-name": aniName,
+                  "data-count": count,
+                  "data-input-count": count,
+                  'data-old-count': count,
+                }).find(".ani-count").text(count);
+              }
+
+              $("#buy-total").text(_total);
+
+            })
+          }
+
+          setTimeout(function(){
+            $(".list-block").on("click", ".item", function(){
+              if(isOpenSoon){
+                $.alert('离开场时间不到15分钟，禁止买入');
+                return;
+              }
+              if(isOpened){
+                $.alert('开场时间已过，禁止买入');
+                return;
+              }
+              var $this = $(this);
+              var aniId = $this.attr("data-id");
+              var annimalName = $(this).attr('data-name');
+              var oldCount = $(this).attr("data-old-count");
+              var inputCount = $(this).attr("data-input-count");
+              if($.inArray(aniId, forbidAniArr) >= 0){
+                $.alert("动物满注");
+                return;
+              }
+              if($.inArray(aniId, forbidAniArr) >= 0){
+                $.alert("管理员已禁止该动物买入");
+                return;
+              }
+
+              // let hasBuyTotal = 0;
+              // $(".item-content").each(function(){
+              //   var count = $(this).data("count");
+              //   if(!isNaN(parseInt(count))){
+              //     hasBuyTotal += parseInt(count);
+              //   }
+              // });
+
+              // currentBalance = uBalance - hasBuyTotal;
+
+              var prop = $.prompt(annimalName + '<p style="font-size:.75rem;">(剩余点数：' + uBalance + ')</p>', function (value) {
+                var _count = inputCount ? parseFloat(value) + parseFloat(inputCount) : value;
+
+                var _detail = [];
+
+                if(isNaN(parseInt(value))){
+                  $.alert("只能输入数字");
+                }else if(value > maxAniCount){
+                  $.alert("不能大于" + maxAniCount);
+                }else if(_count < 0){
+                    $.alert("不能小于0");
+                }else{
+                  
+                  var checkParam = {
+                    sessionId: sessionId,
+                    animalId: aniId,
+                    buyCount: _count
+                  };
+                  if(isEdit){
+                    checkParam.isEdit = isEdit;
+                    checkParam.oldCount = _count;
+                  }
+
+                  GLOBAL.ajax("post", '/buy/getAnimalBuyTotal', checkParam, function(e){
+                    var code = e.code;
+                    if(code == 200){
+                      $this.attr("data-count", _count);
+                      $this.attr("data-input-count", _count);
+                      $this.find(".ani-count").text(_count);
+                      var _total = 0;
+                      $(".item").each(function(){
+                        var aniId = $(this).data("id");
+                        var aniName = $(this).data("name");
+                        var count = $(this).data("count");
+                        var oldCount = $(this).attr("data-old-count");
+                        if(!isNaN(parseInt(count))){
+                            _detail.push('{"id": "'+aniId+'", "aniName": "'+aniName+'", "oldCount": '+oldCount+', "count": '+count+'}');
+                            _total += count;
+                        }
+                      });
+                      $("#buy-total").text(_total);
+                      GLOBAL.session(sessionId, '[' + _detail.toString() + ']');
+                    }else{
+                      $.alert(e.msg);
+                    }
+                  })
+                  
+                }
+              });
+
+              $(prop).find(".modal-text-input").attr("type", "number").focus();
+            })
+          }, 1000)
+        });
+        
+      })
+
+      var wrapper = document.querySelector('.content');
+      var totalBox = document.querySelector('.buy-total-box');
+      var fixedLine = document.querySelector('.fixed-line');
+      wrapper.onscroll = function (e) {
+            var fixedLineRect = fixedLine.getBoundingClientRect();
+            var top = fixedLineRect.top;
+            if(top <= 43) {
+                totalBox.style.position = 'fixed';
+                totalBox.style.top = '2.2rem';
+                totalBox.style.boxShadow = '2px 2px 10px 0.1px rgba(0, 0, 0, .3)';
+            } else {
+                totalBox.style.position = 'static';
+                totalBox.style.top = '0';
+                totalBox.style.boxShadow = '';
+            }
+      }
+
+      $(".button-success").click(function(){
+        var detail = [];
+        var amount = 0;
+
+        GLOBAL.ajax('post', '/user/getBalance', {uId: GLOBAL.get('uid')}, function(e){
+          var rCode =  e.code;
+          if(rCode == 200){
+              //购买前的余额
+              var balance = e.data;
+              //购买后的余额
+              var newBalance = balance;
+              var editNewCount = 0;
+              var oldAmount = 0;
+              $(".item").each(function(){
+                var aniId = $(this).data("id");
+                var aniName = $(this).data("name");
+                var count = $(this).data("count");
+                var oldCount = $(this).attr("data-old-count");
+                if(!isNaN(parseInt(count))){
+                  amount += parseInt(count);
+                  detail.push({
+                    id: aniId,
+                    aniName: aniName,
+                    oldCount: oldCount,
+                    count: count
+                  })
+                  oldAmount += Number(oldCount);
+                  newBalance += Number(oldCount) - Number(count);
+                }
+              });
+
+
+              // if(oldAmount == amount){
+              //   $.alert("数据没有变化");
+              //   return;
+              // }
+
+              var data = {
+                    uId: GLOBAL.get('uid'),
+                    uName: GLOBAL.get('uname'),
+                    sessionId: sessionId,
+                    sessionName: sessionName,
+                    placeId: options.param.placeId,
+                    amount: amount,
+                    balance: newBalance,
+                    detail: JSON.stringify(detail)
+                  };
+
+              editNewCount = oldAmount - amount;
+
+              if(isEdit){
+                if((editNewCount < 0 && Math.abs(editNewCount) <= balance) || editNewCount >= 0){
+                  data.oldAmount = oldAmount;
+                  GLOBAL.ajax('put', '/buy/updateBuy', data , function(e){
+                    var code = e.code;
+                    var msg = e.msg;
+                    if(code == 200){
+                      GLOBAL.go("session_list.html");
+                    }
+                    $.toast(msg);
+                  })
+                }else{
+                  $.alert('余额( ' + balance + ' )不足，请先充点！')
+                }
+              }else{
+                if(amount <= balance){
+                  GLOBAL.ajax('post', '/buy/addOne', data , function(e){
+                    var code = e.code;
+                    var msg = e.msg;
+                    if(code == 200){
+                      GLOBAL.go("session_list.html");
+                    }
+                    $.toast(msg);
+                  })
+                }else{
+                  $.alert('余额( ' + balance + ' )不足，请先充点！')
+                }
+              }
+            }
+        });
+        
+      });
+
+      $(".tab-item.active").removeClass("active");
+      $(".tab-item").eq(1).addClass("active");
+    } 
+  </script>

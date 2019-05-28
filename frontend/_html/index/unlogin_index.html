@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>风云</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="/css/sm.min.css">
+    <link rel="stylesheet" href="/css/sm-extend.min.css">
+    <script src="/js/lib/zepto.min.js"></script>
+
+  </head>
+  <body>
+
+    <div class="page-group">
+      <div class="page page-current">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-right" id="login">
+              <span class="icon icon-right"></span>
+              登录
+            </a>
+          <h1 class="title">欢迎您，<span id="user">游客</span></h1>
+        </header>
+      <div class="content">
+    <div class="card">
+      <div class="card-header" style="text-align: center;">
+        <strong style="display: inline-block;width:100%;text-align: center;">公告说明</strong>
+      </div>
+      <div class="card-content">
+        <div class="card-content-inner" id="notice-content">暂无公告</div>
+      </div>
+    </div>
+  
+    <!-- <div class="list-block profile-bx">
+      <div class="content-block-title" style="text-align: center;">
+        <a data-url="win_ranking.html">中奖排行榜&gt;&gt;</a>
+      </div>
+    </div> -->
+
+    <div class="content-block-title">开奖记录(最近10场)：</div>
+    <div class="list-block open-record" style="height:50vh;overflow-y: auto;margin-bottom: 3rem;">
+      <ul>
+        <p style="text-align: center;font-size:.75rem;">暂无开奖记录</p>
+      </ul>
+    </div>
+
+    <nav class="bar bar-tab">
+      <a class="tab-item active" href="/html/index/unlogin_index.html" target="_blank">
+        <span class="icon icon-home"></span>
+        <span class="tab-label">首页</span>
+      </a>
+      <a class="tab-item" href="/html/index/unlogin_sessions.html" target="_blank">
+        <span class="icon icon-settings"></span>
+        <span class="tab-label">字画街</span>
+      </a>
+    </nav>
+
+    <script type='text/javascript' src='/js/lib/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='/js/lib/sm-extend.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='../../js/common.js' charset='utf-8'></script>
+    <script type='text/javascript' src='../../js/zepto.cookie.min.js' charset='utf-8'></script>
+    <script>
+
+        $("#login").click(function(){
+          location.href = "/login.html?relogin=1";
+        })
+
+        GLOBAL.ajax('get', '/notice/getNotice', null, function(e){
+          var code = e.code;
+          if(code == 200){
+            var data = e.data;
+            var content = data[0].content;
+            $("#notice-content").html(content.replace(/\n/g,"<br/>").replace(/\s/g,"&nbsp;"));
+          }
+        })
+
+        
+        var openList = "";
+        GLOBAL.ajax('get', '/session/getOpenSession', null, function(e){
+          var code = e.code;
+          if(code == 200){
+            var data = e.data;
+            for(var i = 0; i < data.length; i++){            
+              var placeName = data[i].placeName;
+              var openTime = data[i].openTime || "";
+              var placeId = data[i].placeId;
+              var openAnimalName = data[i].openAnimalName || "<span style='font-size:.7rem;color:red;'>未设</span>";
+              var sessionName = data[i].sessionName.split('场')[0].split("").pop();
+              openList += '<li class="item-content" style="font-size:14px" data-placeid="'+placeId+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+'：</div><div class="item-after" ><span style="font-size:14px">'+openTime.split('-').join("/").split(" ")[0]+'</span>（'+sessionName+'）'+openAnimalName+'</div></div></li>'
+            }
+            $(".open-record ul").empty().append(openList);
+          }
+        })
+    </script>
+  </body>
+</html>

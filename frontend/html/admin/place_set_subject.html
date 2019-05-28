@@ -1,0 +1,148 @@
+    <style>
+      .animal-list .item{
+        width: 100%;
+        border: 1px solid #4cd964;
+        color: green;
+        border-radius: 2px;
+        text-align: center;
+        height: 2rem;
+        line-height: 2rem;
+        margin-bottom: 0rem;
+      }
+      .row{
+        margin-bottom:1rem;
+      }
+
+      .item{
+        position: relative;
+      }
+      .item.active{
+        background: #4cd964;
+        color:#000;
+      }
+      .content-block{
+         margin-bottom:3rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url='subject_place_list.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">设置<span class="place-name"></span>题目</h1>
+    </header>
+
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="content-block">
+          <p style="position: relative;">
+            <a href="#" class="button button-round btn-upload-img" style="overflow:hidden;">
+              <span class="progress-bar" style="position: absolute;height:1.35rem;left:0;top:0;width:0%;background:#4cd964;z-index: -1"></span>
+              <span class="icon icon-picture" style="padding:0 .5rem;"></span>点击上传图片(限5M)</a>
+            <input type="file" name="image" accept=“image/*” id="input-file" style="position: absolute;top:0;height: 2.4rem;opacity: 0">
+          </p>
+          <p>
+            <img src="" alt="" id="uploaded-img" style="width:100%;">
+          </p>
+          <p>
+            <textarea name="" rows="5" id="subject-text" style="width:100%" placeholder="输入题目"></textarea>
+          </p>
+          <p style="position: relative;">
+            <a href="#" class="button button-fill button-big button-success btn-submit-subject">提交</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+          //设置地点题目
+
+          $(".place-name").text(options.param.placeIName);
+          $("#uploaded-img").attr('src', options.param.placeImg);
+          $("#subject-text").val(options.param.placeSubject);
+
+          $('#input-file').change(function(e){
+            handleInputChange(e);
+          });
+
+          $(".btn-submit-subject").click(function(){
+            GLOBAL.ajax("put", '/place/saveSubject', {
+              img: $("#uploaded-img").attr("src"),
+              text: $("#subject-text").val(),
+              placeId: options.param.placeId,
+              placeName: $("#place-name").val(),
+            }, function(e){
+              var code = e.code;
+              if(code == 200){
+                $.alert("保存成功！");
+              }else{
+                $.alert("保存失败！");
+              }
+            });
+          })
+
+          //全局对象，不同function使用传递数据
+          // const imgFile = {};
+
+          function handleInputChange (event) {
+              // 获取当前选中的文件
+              const file = event.target.files[0];
+              const imgMasSize = 1024 * 1024 * 5; // 5MB
+              // 检查文件类型
+              if(['jpeg', 'png', 'gif', 'jpg'].indexOf(file.type.split("/")[1]) < 0){
+                  // 自定义报错方式
+                  $.alert("请选择图片文件！");
+                  return;
+              }
+
+              // 文件大小限制
+              if(file.size > imgMasSize ) {
+                  // 文件大小自定义限制
+                  $.alert("文件过大！");
+                  return;
+              }
+
+              var formData = new FormData();
+              formData.append('image', event.target.files[0]);
+
+              uploadImg(formData);
+          }
+
+          // 上传图片
+          function uploadImg (formData) {
+              const xhr = new XMLHttpRequest();
+              // $.alert(xhr.upload.addEventListener);
+              // return;
+              // 进度监听
+              xhr.upload.addEventListener('progress', function(e){
+                console.log(e.loaded / e.total)
+                $(".progress-bar").show().width((e.loaded * 100 / e.total) + "%");
+              }, false);
+
+              // 加载监听
+              xhr.addEventListener('load', function(){
+                $(".progress-bar").hide();
+              }, false);
+
+              // 错误监听
+              // xhr.addEventListener('error', function(){Toast.error("上传失败！", 2000, undefined, false);}, false);
+
+              xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4) {
+                      const result = JSON.parse(xhr.responseText);
+                      if (xhr.status === 200) {
+                          $("#uploaded-img").attr("src", result.data);
+                      } else {
+                          $.alert('上传失败！');
+                      }
+                  }
+              };
+              xhr.open('POST', '/place/subjectImage' , true);
+              xhr.send(formData);
+          }
+
+          
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+      }
+    </script>

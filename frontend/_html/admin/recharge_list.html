@@ -1,0 +1,99 @@
+
+    <style>
+      .recharge-list [data-status="handled"] .item-title{
+         color: #6d6d72 !important;
+      }
+      .recharge-list .item-after{
+        color:#aaa;
+        font-size:12px;
+        margin-left:0;
+      }
+      .recharge-list .item-text{
+        margin-top:.5rem;
+      }
+      .recharge-list .item-text .point{
+        font-size:20px;
+        color:green;
+        padding-right:.2rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <!-- <a class="button button-link button-nav pull-left" href="/demos/card" data-transition='slide-out'>
+        <span class="icon icon-left"></span>
+        返回
+      </a> -->
+      <h1 class="title">充点请求列表</h1>
+    </header>
+    <div class="content">
+      <div class="buttons-tab">
+        <a href="#tab1" class="tab-link active button">待处理</a>
+        <a href="#tab2" class="tab-link button">已处理</a>
+        <a href="#tab3" class="tab-link button">全部</a>
+      </div>
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="tabs">
+          <div id="tab1" class="tab active">
+            <div class="list-block recharge-list">
+              <ul></ul>
+            </div>
+          </div>
+          <div id="tab2" class="tab">
+            <div class="list-block recharge-list">
+              <ul></ul>
+            </div>
+          </div>
+          <div id="tab3" class="tab">
+            <div class="list-block recharge-list">
+              <ul></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+
+          getChargeList(0, $("#tab1 .recharge-list ul"));
+          getChargeList(1, $("#tab2 .recharge-list ul"));
+          getChargeList(2, $("#tab3 .recharge-list ul"));
+
+          function getChargeList(status, $container){
+            GLOBAL.ajax('post', '/order/list', {status: status}, function(e){
+              var code = e.code;
+              var data = e.data;
+
+              if(code == 200){
+                var html = '';
+                for(var i = 0; i < data.length; i++){
+                  var head = 'http://'+ location.host + '/images/' + data[i].headImg;
+                  var id = data[i].id;
+                  var uid = data[i].uid;
+                  var count = data[i].count;
+                  var user_name = data[i].uname;
+                  var time = data[i].chargeTime;
+                  var status = data[i].status == 1 ? "handled" : "unhandled"; 
+                  var itemLink = data[i].status == 0 ? "item-link" : ""; 
+                  html += '<li data-id="'+id+'" data-uid="'+uid+'" data-point="'+count+'" data-name="'+user_name+'" data-status="'+status+'"><a href="javascript:" class="'+itemLink+' item-content"><div class="item-media"><img src="'+head+'" style="width: 3rem;"></div><div class="item-inner"><div class="item-title-row"><div class="item-title">'+user_name+'</div><div class="item-after">'+time+'</div></div><div class="item-text"><span class="point">'+count+'</span>点</div></div></a></li>';
+                }
+                $container.empty().append(html);
+              }
+            })
+          }
+
+          $(".recharge-list").on("click", "li[data-status='unhandled']", function(){
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            var uid = $(this).data("uid");
+            var point = $(this).data("point");
+            $.confirm("请确认是否已线下收款 " + point + " 元, 并为 ["+name+"]充值？", function(){
+              GLOBAL.ajax('post', '/order/add', {id: id, uid: uid, uname: name, count: point}, function(e){
+                  var code = e.code;
+                  if(code == 200){
+                    GLOBAL.go('recharge_list.html');
+                    $.alert(e.msg);
+                  }
+              })
+            })
+          })
+        }
+    </script>

@@ -1,0 +1,85 @@
+
+    <style>
+      .header{
+        width: 6rem;
+        height:6rem;
+        border-radius:50%;
+        overflow:hidden;
+        border:5px solid #ccc;
+        margin:1rem auto;
+      }
+      .profile-bx .item-title{
+        color: #888;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left back" href="javascript:" data-url="player_set_list.html" data-transition='slide-out'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <span class="icon icon-edit button-link button-nav pull-right" data-authority="5" id="eidt-user"></span>
+      <h1 class="title"><span class="user-name"></span>的资料</h1>
+    </header>
+    <div class="content">
+      <div class="header">            
+        <img src="" style='width: 6rem;'>
+      </div>
+        <div class="list-block profile-bx">
+          <div class="list-group">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;谓：</div>
+                    <span class="join-time" id="user_name">王翠花</span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">加入时间：</div>
+                    <span class="join-time" id="joinTime">2017年8月15日</span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">剩余点数：</div>
+                    <span class="join-time" id="balance">2500</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      options.initPage = function(){
+        GLOBAL.ajax('post', GLOBAL.host + 'user/userDtl', {uid: options.param.id}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var head = data.user_head;
+            var name = data.user_name;
+            var joinTime = data.joinTime;
+            var balance = data.balance;
+            $(".header img").attr("src", 'http://' + location.host + '/images/' + head);
+            $("#user_name, .user-name").text(name);
+            $("#joinTime").text(joinTime);
+            $("#balance").text(balance);
+          }else{
+            $.alert(e.msg) 
+          }
+        })
+
+        $("#eidt-user").click(function(){
+          GLOBAL.go("add_user.html");
+        })
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(1).addClass("active");
+      }
+    </script>

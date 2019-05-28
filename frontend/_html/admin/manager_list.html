@@ -1,0 +1,92 @@
+
+    <style>
+      .list-block .item-content{
+        padding-left: 0
+      }
+      .list-block .item-after{
+        width:7rem;
+        overflow:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size:.5rem;
+        text-align: right;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="setting.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">管理员列表</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="list-block">
+            <ul></ul>
+          </div>
+      </div>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-100"><a href="javascript:" class="button button-big button-fill button-success" style="font-size:30px;">+</a></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('get', '/authority/fetchAll', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var authData = {};
+              if(code == 200){
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id,
+                      authName = data[i].authName;
+                  authData[id] = authName;
+                }
+
+                GLOBAL.ajax('get', '/user/getManagers', null, function(e){
+                  var code = e.code;
+                  var data = e.data;
+                  var $container = $(".list-block ul");
+                  if(code == 200){
+                    var html = '';
+                    var activeHtml = '';
+                    for(var i = 0; i < data.length; i++){
+                      var id = data[i].id;
+                      var user_name = data[i].user_name;
+                      var authority = data[i].authority;
+                      var authCnArr = [],
+                          authCnStr = '';
+                      if(authority){
+                        var authArr = authority.split(",");
+                        for(var j = 0; j < authArr.length; j++){
+                          var authId = authArr[j]
+                          authCnArr.push(authData[authId]);
+                        }
+                        authCnStr = authCnArr.join(",");
+                      }
+                      activeHtml += '<li class="item-content item-link" data-id="'+id+'" data-name="'+user_name+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+user_name+'</div><div class="item-after">'+authCnStr+'</div></div></li>';
+                    }
+                    $container.empty().append(activeHtml);
+                  }
+              })
+              }
+          })
+
+          $(".button-success").click(function(){
+            options.param.uid = null;
+            GLOBAL.go('add_manager.html');
+          })
+
+          $(".list-block ul").on("click", '.item-content', function(){
+            var uid = $(this).data("id");
+            options.param.uid = uid;
+            GLOBAL.go('add_manager.html');
+          })
+          
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+        }
+    </script>

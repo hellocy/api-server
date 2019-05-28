@@ -1,0 +1,129 @@
+    <style>
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url='place_session.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title"></h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;padding:0">
+          <div class="list-block">
+            <ul>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">开场动物</div>
+                  <div class="item-after open-animal"></div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">开场时间</div>
+                  <div class="item-after open-time"></div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">倍率</div>
+                  <div class="item-after open-rate"></div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="buttons-tab">
+            <a href="#buyer" class="tab-link active button">按用户统计</a>
+            <a href="#animal" class="tab-link button">按动物统计</a>
+          </div>
+          <div class="content-block" style="padding:0;margin-top:.7rem;">
+            <div class="tabs">
+              <div id="buyer" class="tab active">
+                  <p style="margin-right:.75rem;font-size:.75rem;text-align: right;">总计：<span class="buy-total1">0</span></p>
+                  <div class="list-block buy-detail" style="margin:0.75rem 0;font-size:.75rem;">
+                    <ul><p class="empty-tip" style="margin:0.75rem 0;font-size:.7rem;text-align: center;color:#aaa;">本场暂无下注记录</p></ul>
+                  </div>
+              </div>
+              <div id="animal" class="tab">
+                  <p style="margin-right:.75rem;font-size:.75rem;text-align: right;">总计：<span class="buy-total2">0</span></p>
+                  <div class="list-block" style="margin:0.75rem 0;font-size:.75rem;">
+                    <ul><p class="empty-tip" style="font-size:.7rem;text-align: center;color:#aaa;">本场暂无下注记录</p></ul>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    
+    <script>
+        options.initPage = function(){
+          $(".title").text(options.param.sessionName);
+          $(".open-animal").text(options.param.openAnimal);
+          $(".open-time").text(options.param.openTime);
+          $(".open-rate").text(options.param.rate);
+
+          var sessionName = options.param.sessionName;
+          var sessionId = options.param.sessionId;
+          GLOBAL.ajax('post', '/buy/getBuyDtl', {
+            sessionId: sessionId
+          }, function(e){
+            var code = e.code;
+            if(code == 200){
+              var data = e.data;
+              var l = data.length;
+              var html = '';
+              var total = 0;
+              for(var i = 0; i < l; i++){
+                var uName = data[i].uName;
+                var uId = data[i].uId;
+                var amount = data[i].amount;
+                total += amount;
+                html += '<li class="item-content item-link" data-uid="'+uId+'"><div class="item-inner"><div class="item-title">'+uName+'</div><div class="item-after">'+amount+'点</div></div></li>';
+              }
+              $(".buy-total1").text(total);
+              $(".list-block.buy-detail ul").empty().append(html);
+            }
+          })
+
+
+          GLOBAL.ajax('post', '/buy/getSessionBuyAnimal', {sessionId: options.param.sessionId}, function(e){
+            var code = e.code;
+            var data = e.data;
+            var $container = $("#animal .list-block ul");
+            var animals = {};
+            var total = 0;
+            if(code == 200){
+              var html = '';
+              for(var i = 0; i < data.length; i++){
+                var usersData = JSON.parse(data[i].detail);
+                for(var j = 0; j < usersData.length; j++){
+                  var detail = usersData[j];
+                  var aniName = detail.aniName;
+                  var aniCount = detail.count;
+                  if(animals[aniName]){
+                    animals[aniName] = animals[aniName] + aniCount;
+                  }else{
+                    animals[aniName] = aniCount;
+                  }
+                  total += aniCount
+                }
+              }
+
+              // html += '<li class="item-content" style="margin-bottom:1rem;"><div class="item-inner"><div class="item-title">总计：</div><div class="item-after" style="font-size:1rem;">'+total+'</div></div></li>';
+              $(".buy-total2").text(total);
+              for(var n in animals){
+                html += '<li class="item-content"><div class="item-inner"><div class="item-title">'+n+'</div><div class="item-after">'+animals[n]+'</div></div></li>';
+              }
+
+              if(html){
+                $container.empty().append(html);
+              }
+            }
+          })
+
+          $(".list-block.buy-detail ul").on("click", 'li', function(){
+            options.param.uId = $(this).data("uid");
+            options.param.uName = $(this).find(".item-title").text();
+            GLOBAL.go('bet_detail_opened.html');
+          })
+        }
+    </script>

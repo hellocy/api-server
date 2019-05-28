@@ -1,0 +1,58 @@
+
+    <style>
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择地点</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+          <div class="list-block">
+            <ul></ul>
+          </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+
+          GLOBAL.ajax('get', '/place/list', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $(".list-block ul");
+              if(code == 200){
+                var html = '';
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id;
+                  var name = data[i].name;
+                  var time = data[i].animal;
+                  html += '<li class="item-content" data-id="'+id+'"><div class="item-inner"><div class="item-title">'+name+'</div><span class="icon icon-remove" style="color:red;"></span></div></li>';
+                }
+                $container.empty().append(html);
+              }
+          })
+
+          $(".list-block ul").on("click", '.icon-remove', function(){
+            var $this = $(this);
+            var placeId = $this.closest("li").attr("data-id");
+            var placeName = $this.prev().text();
+            $.confirm("确定要删除该地点吗？", '地点删除后，相关信息将全部删除', function(){
+              GLOBAL.ajax("post", '/place/delete', {placeId: placeId, placeName: placeName}, function(e){
+                var code = e.code,
+                    data = e.data;
+                if(code == 200){
+                  $this.closest("li").remove();
+                  $.alert("删除成功！");
+                }else{
+                  $.alert("删除失败！");
+                }
+              })
+            })
+          })
+
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(0).addClass("active");
+        }
+    </script>

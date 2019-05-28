@@ -1,0 +1,80 @@
+
+    <style>
+      .list-block .item-content{
+        padding-left: 0
+      }
+       .list-block .item-link[data-status='1'] .item-inner{
+        color:#ccc;
+      }
+       .list-block .item-link[data-status='1'] .item-after{
+        color:#ccc;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="setting.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择场次</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+          <div class="list-block">
+            <ul>
+              <p style="text-align: center;">暂无场次</p>
+            </ul>
+          </div>
+      </div>
+    </div>
+    
+    <script>
+        options.initPage = function(){
+
+            GLOBAL.ajax('post', '/session/getTodySession', null, function(e){
+              var code = e.code;
+              var data = e.data;
+              var $container = $(".list-block ul");
+              if(code == 200){
+                var html = '';
+                var activeHtml = '';
+                for(var i = 0; i < data.length; i++){
+                  var id = data[i].id;
+                  var placeId = data[i].placeId;
+                  var placeName = data[i].placeName;
+                  var sessionName = data[i].sessionName;
+                  var openAnimalName = data[i].openAnimalName;
+                  var openAnimalId = data[i].openAnimalId;
+                  var openTime = data[i].openTime;
+                  var rate = data[i].rate;
+                  var sequence = data[i].sequence;
+                  var status = data[i].status;
+                  var aniMaxCount = data[i].aniMaxCount;
+                  var forbiddenAni = data[i].forbiddenAni;
+                  if(status == '0'){
+                    activeHtml += '<li class="item-content item-link" data-id="'+id+'" data-status="'+status+'" data-session-name="'+sessionName+'" data-place-id="'+placeId+'" data-open-time="'+openTime+'" data-animal-id="'+openAnimalId+'" data-animal-name="'+openAnimalName+'" data-rate="'+rate+'" data-animaxcount="'+aniMaxCount+'" data-forbidani="'+forbiddenAni+'"><div class="item-media"><i class="icon icon-f7"></i></div><div class="item-inner"><div class="item-title">'+placeName+'</div><div class="item-after">'+sequence+'</div></div></li>';
+                  }
+                }
+                activeHtml && $container.empty().append(activeHtml);
+              }
+          })
+
+          $(".list-block ul").on("click", '.item-content', function(){
+            options.param.sessionId = $(this).data('id');
+            options.param.placeId = $(this).attr('data-place-id');
+            options.param.sessionName = $(this).attr('data-session-name');
+            
+            options.param.openAnimalName = $(this).attr('data-animal-name');
+            options.param.openAnimalId = $(this).attr('data-animal-id');
+            options.param.openTime = $(this).attr('data-open-time');
+            options.param.rate = $(this).attr('data-rate');
+            options.param.animaxcount = $(this).attr('data-animaxcount');
+            options.param.forbidani = $(this).attr('data-forbidani');
+
+
+            GLOBAL.go('session_setting_item.html');
+          })
+
+          $(".tab-item.active").removeClass("active");
+          $(".tab-item").eq(1).addClass("active");
+        }
+    </script>

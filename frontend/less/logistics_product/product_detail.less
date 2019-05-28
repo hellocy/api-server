@@ -1,0 +1,367 @@
+.common_add{
+    .modal{
+      .form-group-sm{
+        text-align:left;
+        label{
+           padding-top: 0;
+        }
+      }
+    }
+    label em.error{
+      color: red!important;
+      font-style: normal;
+	  vertical-align: middle;
+	  margin-top: 4px;
+	  font-size: 15px;
+    }
+    padding:0;
+    width:80%;
+    .modal-dialog{
+     width:100%;
+     height:100%;
+    }
+    .modal{
+     width:80%;
+     top:10%;
+     left:10%
+    }
+    #js_dataTable_platform{
+      border:1px #ddd solid;
+      th{
+        border-right:1px #ddd solid;
+      }
+    }
+    .product_model{
+       width: 1300px;
+    }
+    .tab_content{
+      height:30px;
+      line-height:30px;
+      border-bottom: 1px solid #dddee1;
+      margin-bottom: 20px;
+      li{
+        display:inline-block;
+        padding: 0 22px;
+        cursor:pointer
+      }
+      li.cur{
+        color: #2d8cf0;
+        border-bottom:1px #2d8cf0 solid
+      }
+    }
+	.form_content {
+	    .log{
+	      width:1000px;
+	      min-height: 500px;
+          margin-left: 130px;
+          .fixed-table-pagination{
+            dislay:none!important;
+          }
+          table{
+            border: 1px #ddd solid;
+          }
+          th{
+            border-right: 1px #ddd solid;
+          }
+	    }
+	    .form_content_item.cur{
+          display:block;
+          .fixed-table-pagination{
+            display:block!important;
+          }
+	    }
+	    .form_content_item{
+          display:none;
+	    }
+	    .fee_model_add{
+	      margin-top:20px;
+	      label.error{
+	        top:1px;
+	      }
+	    }
+	    .fee_model{
+	       min-height: 600px;
+	      .radio .label {
+	        float: right;
+            margin-top: -9px;
+            margin-left: -17px;
+	        label{
+	          float:none;
+	          display:block;
+	          position:relative;
+	          label.error{
+		        position: absolute;
+	            right: -243px;
+		      }
+	        }
+	      }
+	      .bubble_percent p{
+	        margin-left: 200px;
+            margin-top: -7px;
+            margin-bottom: 15px;
+	      }
+	      .charge_unit_control,.volume_factor{
+	        display:none;
+	      }
+	    }
+		li {
+		  overflow: hidden;
+		  .wasehouseSelect span,.platformselect span{
+		    i{
+		      margin-right:20px;
+		      font-style:normal;
+		    }
+		  }
+		  input[type='text'],select{
+			width:500px !important;
+			height:35px !important;
+			border: 1px solid #dddee1 !important;
+			border-radius: 4px !important;
+			color: #495060!important;
+			font-size:12px;
+			margin-bottom:20px !important;
+			text-indent:15px !important;
+		  }
+		  input[type='text']:focus, input[type='text']:hover{
+		    border-color: #57a3f3;
+		    transition: border .2s ease-in-out,background .2s ease-in-out,box-shadow .2s ease-in-out;
+		  }
+		  input[type='radio']{
+			width:18px;
+			height:17px;
+			margin:8px 5px 10px 5px
+		  }
+	      .radio{
+		    margin:-7px 0 15px 0px;
+		    label.error{
+		      float:right;
+		      margin-top: 7px;
+		    }
+		  }
+	      label{
+		    font-size:14px;
+		    color: #495060;
+		    float: left;
+		    margin: 8px 15px 8px 5px;
+		    width: 200px;
+		    text-align: right;
+		    margin-bottom:20px;
+		  }
+		  label.error{
+		    vertical-align: middle;
+            margin-top: -10px;
+            float:none;
+		    color:red !important;
+		    text-align:left;
+		    width:250px;
+		  }
+		  .warehouse input[type='text'],.warehouse select{
+            width:150px !important;
+		  }
+          .warehouse label{
+            width:auto;
+          }
+		  .lable.error{
+		    width: auto;
+		  }
+		  .total_service{
+		    margin-left: 200px;
+		  }
+	      .subInternation .logistics_way .logistics_way_add.add{
+	        display:none
+	      }
+	      .subInternation .logistics_way:first-child .logistics_way_sub.sub{
+	        display:none
+	      }
+	      .subInternation .logistics_way:first-child .logistics_way_add.add{
+	        display:inline-block
+	      }
+	     
+	      .subInternation:first-child .logistics_way_add{
+	        display:inline-block
+	      }
+		  .subInternation {
+		    margin-left:20px;
+		    .radio{
+		      margin: -10px 5px 15px 5px;
+		    }
+		    .total_logistics_way {
+		      display:inline-block;
+		      vertical-align: top;	
+		      .int_logistics_way{
+                margin-bottom:20px;
+		      }
+		    }
+		    select{
+		      width:148px !important;
+		    }
+		    span.add,span.sub{
+		      vertical-align: middle;
+			  margin-left: 30px;
+			  height: 30px;
+			  line-height: 26px;
+			  font-size: 17px;
+			  cursor: pointer;
+			  width: 50px;
+			  display: inline-block;
+	          border: 1px solid transparent;
+	          text-align: center;
+	          color:#fff;
+	          font-size:18px;
+	          border-radius: 5px;
+	          margin-top: -20px;
+		    }
+		    span.add{
+	          background-color: #2baee9;
+	        }
+	        span.sub{
+	          background-color: #f29100;
+	        }
+		  }
+		  .subInternation:first-child{
+		    margin-left:0;
+		    .service_sub.sub{
+	          display:none;
+	        }
+	      }
+		}
+	}
+}
+
+.select2-container--default .select2-selection--single{
+	height:35px;
+	border-radius:4px;
+
+}
+.select2-container .select2-selection--single .select2-selection__rendered{
+	margin-top:0;
+}
+
+.layui-layer .layui-layer-title{
+	font-size:15px;
+}
+.layui-layer-rim{
+	border:none;
+}
+.layui-layer .pl10{
+   padding:20px;
+}
+.layui-layer select{
+    width: 153px !important;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 4px;
+}
+.fee_model_add .select2-container--default{
+    width:500px !important;
+}
+#product_form .select2-container{
+	margin-bottom:20px;
+}
+
+#searchForm_new{
+  input,select{
+     width:150px;
+  }
+  .check{
+    margin: 20px 77px -13px 0px;
+  }
+}
+
+.get_account_add .form_content {
+  .form_content_item{
+    margin-top:20px;
+	display:block;
+  }
+  li label.error{
+    margin-top:3px;
+  }
+  .radio label{
+    width:auto;
+    margin-top:4px;
+  }
+  textarea{
+    width: 500px;
+    min-height: 70px;
+    margin-bottom: 20px;
+    resize: none;
+    border: 1px solid #dddee1 !important;
+    border-radius: 4px !important
+  } 
+}
+.nav-tabs{
+	border-bottom:none
+}
+.select2-container{
+	width:500px !important
+}
+.logistics_way .select2-container{
+	width:148px !important
+}
+.operate_log{
+  float:right;
+  cursor:pointer;
+}
+.content-header>.breadcrumb>li.operate_log:before{
+	content:'';
+}
+
+.box_view{
+    width:100%;height:100%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:9999;
+    display:none;
+    .opacity{
+        width:100%;height:100%;
+        position:fixed;
+        background-color:#000;
+        opacity:0.4;
+        top:0;
+        left:0;
+        z-index:9999;
+    }
+    .content{
+        width: 80%;
+        left: 10%;
+        top: 25%;
+        position: fixed;
+        z-index: 99999;
+        background-color: #fff;
+        h3{
+	        line-height: 40px;
+	        text-align: center;
+	    }
+	    ul {
+	        margin-bottom:20px;
+	        li{
+		        display:inline-block;
+		        margin-right:30px;
+		        em{
+			      color:red;
+			      font-style:normal;
+			      margin:0 5px;
+			    }
+		    }
+	    }
+    }
+    .fixed-table-pagination{
+        display:none !important;
+    }
+    .button{
+       width:100%;
+       text-align:center;
+       margin-top:15px;
+    }
+    .fixed-table-body{
+       border:1px #ddd solid;
+       border-bottom:none;
+    }
+    .bootstrap-table .table>thead>tr>th{
+       border-right:1px #ddd solid;
+    }
+    .fixed-table-toolbar .bs-bars{
+        display:none;
+    }
+}  

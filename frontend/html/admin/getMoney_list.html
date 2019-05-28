@@ -1,0 +1,94 @@
+
+    <style>
+      .content-block{
+        margin-top:.75rem;
+      }
+      .getmoney-list{
+        margin-top:.5rem;
+      }
+      .getmoney-list [data-status="handled"] .item-title{
+         color: #6d6d72 !important;
+      }
+      .getmoney-list .item-after{
+        color:#aaa;
+        font-size:12px;
+        margin-left:0;
+      }
+      .getmoney-list .item-text{
+        margin-top:.5rem;
+      }
+      .getmoney-list .item-text .point{
+        font-size:20px;
+        color:green;
+        padding-right:.2rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html" data-transition='slide-out'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">所有用户提点记录</h1>
+    </header>
+    <div class="content">
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="list-block getmoney-list">
+          <ul></ul>
+        </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+
+          // getChargeList(0, $("#tab1 .getmoney-list ul"));
+          // getChargeList(1, $("#tab2 .getmoney-list ul"));
+          // getChargeList(2, $("#tab3 .getmoney-list ul"));
+
+          // function getChargeList(status, $container){
+          //   GLOBAL.ajax('post', '/order/list', {status: status}, function(e){
+          //     var code = e.code;
+          //     var data = e.data;
+
+          //     if(code == 200){
+          //       var html = '';
+          //       for(var i = 0; i < data.length; i++){
+          //         var head = 'http://'+ location.host + '/images/' + data[i].headImg;
+          //         var id = data[i].id;
+          //         var uid = data[i].uid;
+          //         var count = data[i].count;
+          //         var user_name = data[i].uname;
+          //         var time = data[i].chargeTime;
+          //         var status = data[i].status == 1 ? "handled" : "unhandled"; 
+          //         var itemLink = data[i].status == 0 ? "item-link" : ""; 
+          //         html += '<li data-id="'+id+'" data-uid="'+uid+'" data-point="'+count+'" data-name="'+user_name+'" data-status="'+status+'"><a href="javascript:" class="'+itemLink+' item-content"><div class="item-media"><img src="'+head+'" style="width: 3rem;"></div><div class="item-inner"><div class="item-title-row"><div class="item-title">'+user_name+'</div><div class="item-after">'+time+'</div></div><div class="item-text"><span class="point">'+count+'</span>点</div></div></a></li>';
+          //       }
+          //       $container.empty().append(html);
+          //     }
+          //   })
+          // }
+
+          GLOBAL.ajax('post', '/order/getMoneyAllHistory', null, function(e){
+              var code = e.code;
+              if(code == 200){
+                var data = e.data;
+                var html = '';
+                var $container = $(".getmoney-list ul");
+                for(var i = 0; i < data.length; i++){
+                  var head = 'http://'+ location.host + '/images/' + data[i].headImg;
+                  var id = data[i].id;
+                  var uid = data[i].uid;
+                  var count = data[i].count;
+                  var user_name = data[i].uname;
+                  var time = data[i].datetime;
+                  var status = data[i].status == 1 ? "handled" : "unhandled"; 
+                  var itemLink = data[i].status == 0 ? "item-link" : ""; 
+                  html += '<li data-id="'+id+'" data-uid="'+uid+'" data-point="'+count+'" data-name="'+user_name+'"><a href="javascript:" class="item-content"><div class="item-media"><img src="'+head+'" style="width: 3rem;"></div><div class="item-inner"><div class="item-title-row"><div class="item-title">'+user_name+'</div><div class="item-after">'+time+'</div></div><div class="item-text"><span class="point">'+count+'</span>点</div></div></a></li>';
+                }
+                $container.empty().append(html);
+              }else{
+                var msg = e.msg;
+                $.alert(msg);
+              }
+          })
+        }
+    </script>

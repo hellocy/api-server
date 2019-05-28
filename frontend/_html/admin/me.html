@@ -1,0 +1,120 @@
+
+    <style>
+      .header{
+        width: 5rem;
+        height:5rem;
+        border-radius:50%;
+        overflow:hidden;
+        border:5px solid #ccc;
+        margin:.5rem auto;
+      }
+      .profile-bx .item-title{
+        color: #888;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <h1 class="title">我的资料</h1>
+    </header>
+    <div class="content">
+      <div class="header">            
+        <img src="" style='width: 4.5rem;'>
+      </div>
+      <div class="content-padded">
+        <p style='text-align: center;margin:.5rem 0 1rem 0'>
+          <span class="myName"></span>（管理员）
+        </p>
+      </div>
+      <div class="list-block profile-bx" style="margin-top: 0.5rem;margin-bottom: 3rem;">
+        <div class="list-group">
+          <ul>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">加入时间：</div>
+                  <span class="join-time"></span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content-block-title">我的消息</div>
+        <div class="list-group msg-box">
+          <ul></ul>
+        </div>
+
+        <div class="content-block">
+          <div class="row">
+            <div class="col-100"><a href="javascript:" class="button button-big button-fill button-dark btn-updatepwd">修改密码</a></div>
+          </div>
+          <div class="row" style="margin-top: 1rem;">
+            <div class="col-100"><a href="javascript:" class="button button-big button-fill button-danger btn-quite">退出</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      options.initPage = function() {
+          
+        GLOBAL.ajax('post', GLOBAL.host + 'user/userDtl', {uid: GLOBAL.get('uid')}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var head = data.user_head;
+            var name = data.user_name;
+            var joinTime = data.joinTime;
+            $(".header img").attr("src", 'http://' + location.host + '/images/' + head);
+            $(".myName").text(name);
+            $(".join-time").text(joinTime);
+          }else{
+            $.alert(e.msg) 
+          }
+        })
+
+        GLOBAL.ajax("post", '/message/getMessage', {uid: GLOBAL.get('uid')}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var msgCount = data.length;
+            var msgHtml = '';
+            for(var i = 0; i < msgCount; i++){
+              var content = data[i].content,
+                  id = data[i].id,
+                  time = data[i].datetime;
+              msgHtml += '<li data-id="'+id+'"><div class="item-content"><div class="item-inner"><div class="item-title" style="font-size:.6rem;color:#000">'+content+'</div><span style="font-size:.6rem;color:#aaa;text-align:right;">'+time+'</span></div></div></li>';
+            }
+            $(".msg-box ul").empty().append(msgHtml);
+          }
+        })
+
+        $(".msg-box ul").on("click", "li", function(){
+          var $this = $(this);
+          var msgId = $this.attr("data-id");
+          GLOBAL.ajax("put", '/message/updateMessage', {msgId: msgId}, function(e){
+            var code = e.code;
+            var data = e.data;
+            if(code == 200){
+              $this.remove();
+            }
+          })
+        })
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(2).addClass("active");
+
+        $(".btn-updatepwd").click(function(){
+          GLOBAL.go("update_pwd.html");
+        })
+
+        $(".btn-quite").click(function(){
+          $.confirm("确定要退出登录吗？", function(){            
+            GLOBAL.del('uid');
+            GLOBAL.del('role');
+            GLOBAL.del('uname');
+            GLOBAL.del('email');
+            GLOBAL.del('pwd');
+            location.href = '/login.html';
+          })
+        })
+      } 
+    </script>

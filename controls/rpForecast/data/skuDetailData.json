@@ -1,0 +1,29 @@
+[{
+        "sku": "sn2019051105",
+        "rebackAmount": 2,
+        "inRebackAmount": 0,
+        "fullAmount": 0,
+        "badAmount": 0,
+        "nineAmount": 0,
+        "fiveAmount": 0,
+        "rmaGoodRemark": "",
+        "finishTime": "1969-12-31T16:00:00.000+0000",
+        "skuImgs": [
+
+        ]
+    },
+    {
+        "sku": "sn20190511052",
+        "rebackAmount": 3,
+        "inRebackAmount": 0,
+        "fullAmount": 0,
+        "badAmount": 0,
+        "nineAmount": 0,
+        "fiveAmount": 0,
+        "rmaGoodRemark": "",
+        "finishTime": "1969-12-31T16:00:00.000+0000",
+        "skuImgs": [
+
+        ]
+    }
+]

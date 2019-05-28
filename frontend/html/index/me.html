@@ -1,0 +1,173 @@
+
+    <style>
+      .header{
+        width: 5rem;
+        height:5rem;
+        border-radius:50%;
+        overflow:hidden;
+        border:5px solid #ccc;
+        margin:1rem auto;
+      }
+      .profile-bx .item-title{
+        color: #888;
+      }
+      .content{
+        bottom:2rem;
+      }
+      .win-list-box .card{
+        font-size:0.6rem;
+      }
+      .win-list-box .card-header{
+        font-size:0.6rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <h1 class="title">我的资料</h1>
+    </header>
+    <div class="content">
+      <div class="header">            
+        <img src="" style='width: 4.5rem;'>
+      </div>
+      <div class="content-padded">
+        <p style='text-align: center;'>
+          <span class="myName"></span>
+        </p>
+      </div>
+
+      <div class="content-block" style="margin:0.75rem 0">
+        <a href="#" class="button button-fill button-big" id="get-money">提点</a>
+      </div>
+
+      <div class="list-block profile-bx" style="margin-top:0.75rem">
+        <div class="list-group">
+          <ul>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">加入时间：</div>
+                  <span class="join-time">2017年8月15日</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">账户余额：</div>
+                  <span class="balance">2500</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="list-block" style="margin:0.75rem 0">
+          <ul>
+            <li class="item-content item-link" data-url="recharge_history.html">
+              <div class="item-inner">
+                <div class="item-title">账单记录</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content-block-title">中奖记录(最近10次)：</div>
+        <div class="list-block win-list-box">
+          
+        </div>
+
+        <div class="content-block">
+          <div class="row">
+            <div class="col-100"><a href="javascript:" class="button button-big button-fill button-dark btn-updatepwd">修改密码</a></div>
+          </div>
+          <div class="row" style="margin-top: 1rem;">
+            <div class="col-100"><a href="javascript:" class="button button-big button-fill button-danger btn-quite">退出</a></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <script>
+      options.initPage = function() {
+        var balance = 0;
+        GLOBAL.ajax('post', '/user/userDtl', {uid: GLOBAL.get('uid')}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            var head = data.user_head;
+            var name = data.user_name;
+            var joinTime = data.joinTime;
+            balance = data.balance;
+            $(".header img").attr("src", 'http://' + location.host + '/images/' + head);
+            $(".myName").text(name);
+            $(".join-time").text(joinTime);
+            $(".balance").text(balance);
+          }else{
+            $.alert(e.msg) 
+          }
+        });
+
+        $("#get-money").click(function(){
+          var prop = $.prompt('请输入提点点数', '账户余额：' + balance, function (value) {
+            if(value == 0){
+              $.alert("请输入提点数！");
+              return;
+            }
+            if(value > balance){
+              $.alert("余额不足！");
+              return;
+            }
+            $.confirm("确定提点" + value + '吗？', function(){
+              GLOBAL.ajax("post", '/user/getMoney', {uId: GLOBAL.get('uid'), uname: $(".myName").text(), cash: value}, function(e){
+                var code = e.code;
+                if(code == 200){
+                  var rest = e.data;
+                  $(".balance").text(rest);
+                  $.alert('已提点' + value + '. 确认线下提点收取！');
+                }
+              })  
+            })
+          })
+          $(prop).find(".modal-text-input").attr("type", "number").focus();
+        })
+
+        var winHtml = '';
+        GLOBAL.ajax('post', '/user/winRecord', {uid: GLOBAL.get('uid')}, function(e){
+          var code = e.code;
+          var data = e.data;
+          if(code == 200){
+            for(var i = 0; i < data.length; i++){
+              var sessionName = data[i].sessionName;
+              var datetime = data[i].datetime;
+              var count = data[i].count;
+              var balance = data[i].balance;
+              var luckAniName = data[i].luckAniName;
+              var lucyAniCount = data[i].lucyAniCount;
+              winHtml += '<div class="card"><div class="card-header">'+sessionName+'：'+datetime.split(' ')[0].split("-").join("/")+'</div><div class="card-content"><div class="card-content-inner" id="notice-content">'+luckAniName+'，'+lucyAniCount+'，收益 <span style="color:#4cd964;font-size:.7rem;">'+count+'</span> 点, 余额：<span style="color:orange;font-size:.7rem;">'+balance+'</span> 点</div></div></div>';
+            }
+            $(".win-list-box").empty().append(winHtml);
+          }else{
+            $.alert(e.msg) 
+          }
+        });
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(2).addClass("active");
+
+        $(".btn-updatepwd").click(function(){
+          GLOBAL.go("update_pwd.html");
+        })
+
+        $(".btn-quite").click(function(){
+          $.confirm("确定要退出登录吗？", function(){
+
+            GLOBAL.del('uid');
+            GLOBAL.del('role');
+            GLOBAL.del('uname');
+            GLOBAL.del('email');
+            GLOBAL.del('pwd');
+
+            location.href = '/login.html';
+          })
+        })
+      } 
+    </script>

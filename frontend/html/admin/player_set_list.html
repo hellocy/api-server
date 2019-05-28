@@ -1,0 +1,69 @@
+
+    <style>
+      .grid-player{
+        text-align: center;
+      }
+      .content-block{
+        margin-bottom: 3.75rem;
+      }
+      .item{
+        padding: 10px 0;
+      }
+      .item-title{
+        margin:.1rem;
+        font-size:12px;
+        color:#555;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="setting.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">所有用户</h1>
+    </header>
+    <div class="content">
+      <div class="content-padded grid-player">
+      </div>
+      <div class="content-block" data-authority="4">
+        <div class="row">
+          <div class="col-100"><a href="javascript:" class="button button-big button-fill button-success btn-add-player" style="font-size:30px;">+</a></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      options.initPage = function(){
+        $(".grid-player").on('click', '.item', function(){
+          options.param.id = $(this).data('uid');
+          GLOBAL.go("add_user.html");
+        })
+
+        GLOBAL.ajax('get', GLOBAL.host + 'user/list', null, function(e){
+          var code = e.code;
+          var users = e.data;
+
+          if(code == 200){
+            var html = '<div class="row">';
+            for(var i = 0; i < users.length; i++){
+              var head = users[i].headImg;
+              var id = users[i].id;
+              var user_name = users[i].user_name;
+              html += '<div class="col-25 item" data-uid="'+id+'"><img src="../../images/'+head+'" style="width: 3rem;"><p class="item-title">'+user_name+'</p></div>';
+              if(i != 0 && (i+1) % 4 == 0){
+                html += '</div><div class="row">';
+              }
+            }
+            html += '</div>';
+            $(".grid-player").empty().append(html);
+          }
+        })
+
+        $(".btn-add-player").click(function(){
+          options.param.id = null;
+          GLOBAL.go("add_user.html")
+        })
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(1).addClass("active");
+      }
+    </script>

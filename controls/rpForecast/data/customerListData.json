@@ -1,0 +1,50 @@
+ [{
+         "id": "1128389304943443968",
+         "rmaSn": "rma2019051104",
+         "orderSn": "osn2019051104",
+         "logisticsNum": "lsn2019051104",
+         "expressCode": "ec090504",
+         "stockCode": "oms2019051104",
+         "inStockCode": "oms2019051104",
+         "createUser": "createUser05",
+         "finishTime": "2019-05-16T10:41:00.000+0000",
+         "expectTime": "2019-05-20T02:25:56.000+0000",
+         "syncOmsFlag": 0,
+         "forecastFlag": 1,
+         "status": 5,
+         "matchFlag": 0,
+         "rmaType": 3,
+         "dealType": 1,
+         "packImgs": [
+             "a",
+             "b",
+             "a",
+             "b",
+             "a",
+             "b",
+             "a",
+             "b"
+         ]
+     },
+     {
+         "id": "1130898067692781568",
+         "rmaSn": "RMA_1558338410363",
+         "orderSn": "OMS_1558338410363",
+         "logisticsNum": "00001",
+         "expressCode": "0001",
+         "stockCode": "SZ",
+         "inStockCode": "",
+         "createUser": "Martin",
+         "finishTime": "1969-12-31T16:00:00.000+0000",
+         "expectTime": "2019-05-20T07:46:50.000+0000",
+         "syncOmsFlag": 0,
+         "forecastFlag": 1,
+         "status": 2,
+         "matchFlag": 0,
+         "rmaType": 3,
+         "dealType": 1,
+         "packImgs": [
+
+         ]
+     }
+ ]

@@ -1,0 +1,110 @@
+
+    <style>
+      #keyword{
+        width:100%;
+        height:2rem;
+        border:1px solid #eee;
+        padding: 0 .5rem;
+        border-radius: .3rem;
+      }
+      .button-success.button-fill.btn-search{
+        height:2rem;
+        line-height:2rem;
+        font-size:.75rem;
+      }
+      .content-block{
+        margin-top:.75rem;
+        padding:0;
+      }
+      .list-block .item-text{
+        text-align: right;
+      }
+      .item-after{
+        width:7rem;
+        overflow: hidden;
+        font-size:.7rem;
+      }
+      .point{
+        display: block;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" data-url="index.html">
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">选择充值用户</h1>
+    </header>
+    <div class="content">
+      <div class="content-block">
+        <div class="row">
+          <div class="col-80">
+              <input type="text" id="keyword" placeholder="昵称或邮箱">
+          </div>
+          <div class="col-20"><a href="#" class="button button-fill button-success btn-search">搜索</a></div>
+        </div>
+      </div>
+      <div class="content-block" style="margin-bottom: 3rem;">
+        <div class="list-block users-list">
+          <ul></ul>
+        </div>
+      </div>
+    </div>
+    <script>
+        options.initPage = function(){
+          GLOBAL.ajax('get', '/user/list', null, function(e){
+            var code = e.code;
+            var users = e.data;
+
+            if(code == 200){
+              var users = e.data;
+              var html = '';
+              var $container = $(".users-list ul");
+              for(var i = 0; i < users.length; i++){
+                var head = 'http://'+ location.host + '/images/' + users[i].headImg;
+                var id = users[i].id;
+                var user_name = users[i].user_name;
+                var mail = users[i].mail;
+                var balance = users[i].balance; 
+                html += '<li data-id="'+id+'" data-name="'+user_name+'"><a href="javascript:" class="item-content"><div class="item-media"><img src="'+head+'" style="width: 3rem;"></div><div class="item-inner"><div class="item-title-row"><div class="item-title">'+user_name+'</div><div class="item-after">'+mail+'</div></div><div class="item-text"><span class="point">'+balance+'</span>点</div></div></a></li>';
+                }
+                $container.empty().append(html);
+              }else{
+                var msg = e.msg;
+                $.alert(msg);
+              }
+          })
+
+          $(".btn-search").click(function(){
+            var keyword = $.trim($("#keyword").val());
+            if(keyword != ''){
+              GLOBAL.ajax('post', '/user/searchUser', {keyword: keyword}, function(e){
+                var code = e.code;
+                if(code == 200){
+                  var $container = $(".users-list ul");
+                  var users = e.data;
+                  var html = '';
+                  for(var i = 0; i < users.length; i++){
+                    var head = 'http://'+ location.host + '/images/' + users[i].headImg;
+                    var id = users[i].id;
+                    var user_name = users[i].user_name;
+                    var mail = users[i].mail;
+                    var balance = users[i].balance; 
+                    html += '<li data-id="'+id+'" data-name="'+user_name+'"><a href="javascript:" class="item-content"><div class="item-media"><img src="'+head+'" style="width: 3rem;"></div><div class="item-inner"><div class="item-title-row"><div class="item-title">'+user_name+'</div><div class="item-after">'+mail+'</div></div><div class="item-text"><span class="point">'+balance+'</span>点</div></div></a></li>';
+                  }
+                  $container.empty().append(html);
+                }
+              })
+            }
+          })
+
+          $(".users-list").on("click", "li", function(){
+            var uid = $(this).data("id");
+            var uname = $(this).data("name");
+            options.param.uid = uid;
+            options.param.uname = uname;
+            GLOBAL.go("recharge.html")
+          })
+
+        }
+    </script>

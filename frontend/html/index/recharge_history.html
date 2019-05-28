@@ -1,0 +1,106 @@
+
+<style>
+  .item-title{
+    font-size:14px;
+    color:#aaa;
+  }
+  .list-block .item-text{
+    height: 1rem;
+    margin-top:.2rem;
+  }
+  .content-block {
+    margin: 1.75rem 0 3rem 0;
+  }
+  .item-after{
+    font-size:12px;
+  }
+</style>
+<header class="bar bar-nav">
+  <a class="button button-link button-nav pull-left" data-url="me.html" data-transition='slide-out'>
+    <span class="icon icon-left"></span>
+    返回
+  </a>
+  <h1 class="title">我的账单</h1>
+</header>
+<div class="content">
+  <div class="buttons-tab">
+    <a href="#all" class="tab-link active button">全部</a>
+    <a href="#charge" class="tab-link button">充点</a>
+    <a href="#get-mondy" class="tab-link button">提点</a>
+    <a href="#buy" class="tab-link button">下注</a>
+    <a href="#win" class="tab-link button">中奖</a>
+  </div>
+  <div class="content-block">
+    <div class="tabs">
+      <div id="all" class="tab active">
+        <div class="list-block media-list">
+          <ul></ul>
+        </div>
+      </div>
+      <div id="charge" class="tab">
+        <div class="list-block media-list">
+          <ul></ul>
+        </div>
+      </div>
+      <div id="get-mondy" class="tab">
+        <div class="list-block media-list">
+          <ul></ul>
+        </div>
+      </div>
+      <div id="buy" class="tab">
+        <div class="list-block media-list">
+          <ul></ul>
+        </div>
+      </div>
+      <div id="win" class="tab">
+        <div class="list-block media-list">
+          <ul></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  options.initPage = function(){
+    GLOBAL.ajax('post', '/order/history', {uid: GLOBAL.get('uid')}, function(e){
+      var code = e.code;
+      if(code == 200){
+        var data = e.data;
+        var html = '';
+        var html1 = '';
+        var html2 = '';
+        var html3 = '';
+        var html4 = '';
+        $(".user-name").text(data[0].uname);
+        for(var i = 0; i < data.length; i++){
+          var count = data[i].count;
+          var balance = data[i].balance;
+          var sign = data[i].type;
+          var time = data[i].datetime;
+          var optname = data[i].optname;
+          var sessionName = data[i].sessionName ? data[i].sessionName : "";
+
+          html += '<li><a href="#" class="item-content"><div class="item-inner"><div class="item-title-row"><div class="item-title">'+optname+'</div><div class="item-after">'+time+'</div></div><div class="item-subtitle">'+sign+' '+count+'点</div><div class="item-text">余额：'+balance+'<span style="padding-left:3.3rem;font-size:12px;color:#aaa;">'+sessionName+'</span></div></div></a></li>';
+
+          if(optname == '充点'){
+            html1 += '<li><a href="#" class="item-content"><div class="item-inner"><div class="item-title-row"><div class="item-title">'+optname+'</div><div class="item-after">'+time+'</div></div><div class="item-subtitle">'+sign+' '+count+'点</div><div class="item-text">余额：'+balance+'<span style="padding-left:3.3rem;font-size:12px;color:#aaa;">'+sessionName+'</span></div></div></a></li>';
+          }else if(optname == '提点'){
+            html2 += '<li><a href="#" class="item-content"><div class="item-inner"><div class="item-title-row"><div class="item-title">'+optname+'</div><div class="item-after">'+time+'</div></div><div class="item-subtitle">'+sign+' '+count+'点</div><div class="item-text">余额：'+balance+'<span style="padding-left:3.3rem;font-size:12px;color:#aaa;">'+sessionName+'</span></div></div></a></li>';
+          }else if(optname == '下注'){
+            html3 += '<li><a href="#" class="item-content"><div class="item-inner"><div class="item-title-row"><div class="item-title">'+optname+'</div><div class="item-after">'+time+'</div></div><div class="item-subtitle">'+sign+' '+count+'点</div><div class="item-text">余额：'+balance+'<span style="padding-left:3.3rem;font-size:12px;color:#aaa;">'+sessionName+'</span></div></div></a></li>';
+          }else{
+            html4 += '<li><a href="#" class="item-content"><div class="item-inner"><div class="item-title-row"><div class="item-title">'+optname+'</div><div class="item-after">'+time+'</div></div><div class="item-subtitle">'+sign+' '+count+'点</div><div class="item-text">余额：'+balance+'<span style="padding-left:3.3rem;font-size:12px;color:#aaa;">'+sessionName+'</span></div></div></a></li>';
+          }
+        }
+        $("#all ul").empty().append(html);
+        $("#charge ul").empty().append(html1);
+        $("#get-mondy ul").empty().append(html2);
+        $("#buy ul").empty().append(html3);
+        $("#win ul").empty().append(html4);
+      }
+    })
+
+    $(".tab-item.active").removeClass("active");
+    $(".tab-item").eq(2).addClass("active");
+  }
+</script>

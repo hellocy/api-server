@@ -1,0 +1,106 @@
+    <style>
+      .animal-list .item{
+        width: 100%;
+        border: 1px solid #4cd964;
+        color: green;
+        border-radius: 2px;
+        text-align: center;
+        height: 2rem;
+        line-height: 2rem;
+        margin-bottom: 0rem;
+      }
+      .row{
+        margin-bottom:1rem;
+      }
+
+      .item{
+        position: relative;
+      }
+      .item.active{
+        background: #4cd964;
+        color:#000;
+      }
+      .content-block{
+         margin-bottom:3rem;
+      }
+    </style>
+    <header class="bar bar-nav">
+      <a class="button button-link button-nav pull-left" href="javascript:" data-url='index.html'>
+        <span class="icon icon-left"></span>
+        返回
+      </a>
+      <h1 class="title">动物管理</h1>
+    </header>
+    <div class="content">
+      <div class="content-padded animal-list">
+        <div class="item-title label">
+          <p>选择动物:</p>
+        </div>
+        <div class="list-box">
+        </div>
+        
+      </div>
+      <div class="content-block" data-authority="8">
+        <div class="row">
+          <div class="col-100"><a href="#" class="button button-big button-fill button-success btn-add open-about" style="font-size:30px;">+</a></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      options.initPage = function(){
+
+        GLOBAL.ajax("get", '/animal/list', null, function(e){
+          var code = e.code;
+          var data = e.data;
+          var html = '<div class="row">';
+          for(var i = 0; i < data.length; i++){
+            var id = data[i].id
+            var name = data[i].aniCnName;
+            html += '<div class="col-20"><div class="item" data-id="'+id+'">'+name+'</span></div></div>';
+            if(i != 0 && (i+1) % 5 == 0){
+              html += '</div><div class="row">';
+            }
+          }
+          html += '</div>';
+          $(".list-box").empty().append(html);
+        });
+
+        $(".list-box").on("click", ".item", function(){
+          $(".list-box .item.active").removeClass('active');
+          $(this).addClass("active");
+        })
+
+        $(".btn-add").click(function(){
+          $.modal({
+            title:  '请输入动物名称',
+            text: '<div class="list-block"><ul><li><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><input type="text" id="aniName"></div></div></div></li></ul></div>',
+            buttons: [
+              {
+                text: '确定',
+                bold: true,
+                onClick: function() {
+                  var name = $('#aniName').val();
+                  if(name == ''){
+                    $.alert('动物名称不能为空！');
+                    return false;
+                  }
+                  GLOBAL.ajax("post", '/animal/add', {name: name}, function(e){
+                    var code = e.code;
+                    var msg = e.msg;
+                     $.alert(msg);
+                    if(code == 200){
+                      GLOBAL.go("animal.html");
+                    }
+                  })
+                  
+                }
+              },
+            ]
+          })
+        });
+
+        $(".tab-item.active").removeClass("active");
+        $(".tab-item").eq(1).addClass("active");
+      }
+    </script>

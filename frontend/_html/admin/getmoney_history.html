@@ -1,0 +1,56 @@
+
+<style>
+  .item-title{
+    font-size:14px;
+    color:#aaa;
+  }
+  .item-after{
+    font-size:.7rem;    
+  }
+  .count{
+    color:orange;
+    padding: 0 .2rem;
+    font-size:.8rem;
+  }
+  .balance{
+    color:green;
+    padding: 0 .2rem;
+    font-size:.8rem;
+  }
+</style>
+<header class="bar bar-nav">
+  <a class="button button-link button-nav pull-left" data-url="player_detail.html" data-transition='slide-out'>
+    <span class="icon icon-left"></span>
+    返回
+  </a>
+  <h1 class="title"><span class="user-name"></span>的提点历史</h1>
+</header>
+<div class="content">
+  <div class="list-block getmoney-list" style="margin-top: 0.5rem;margin-bottom: 3rem;">
+    <ul>
+      <p style="text-align: center;">暂无提点记录</p>
+    </ul>
+  </div>
+</div>
+<script>
+  options.initPage = function(){
+    GLOBAL.ajax('post', '/order/getMonyHistory', {uid: options.param.id, optname: '提点'}, function(e){
+      var code = e.code;
+      if(code == 200){
+        var data = e.data;
+        if(data.length == 0){
+          return;
+        }
+        var html = '';
+        $(".user-name").text(data[0].uname);
+        for(var i = 0; i < data.length; i++){
+          var count = data[i].count;
+          var balance = data[i].balance;
+          var time = data[i].datetime;
+          html += '<li class="item-content"><div class="item-inner"><div class="item-title">'+time+'</div><div class="item-after">提点 <span class="count">'+count+'</span>, 余额 <span class="balance">'+balance+'</span> 点</div></div></li>';
+        }
+        $(".getmoney-list ul").empty().append(html);
+      }
+    })
+  }
+</script>
